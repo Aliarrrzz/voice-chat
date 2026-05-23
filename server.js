@@ -25,9 +25,12 @@ function getChannelUsers(ch) {
 function broadcastChannelUsers(ch) {
   const users = getChannelUsers(ch);
 
+  // emit to channel members (for full member panel)
   io.to(ch).emit('channel-users', users);
 
+  // emit sidebar snapshot to ALL clients so everyone can see who's in each channel
   io.emit('channel-count', { channel: ch, count: users.length });
+  io.emit('channel-sidebar', { channel: ch, users });
 }
 
 io.on('connection', (socket) => {
@@ -40,6 +43,13 @@ io.on('connection', (socket) => {
   socket.on('set-info', ({ name, avatar }) => {
     userInfo = { name: name || 'Unknown', avatar: avatar || '👤' };
     console.log(`[i] ${socket.id} set name: ${name}`);
+
+    // send current state of all channels to this new client
+    const snapshot = {};
+    Object.keys(channels).forEach(ch => {
+      snapshot[ch] = getChannelUsers(ch);
+    });
+    socket.emit('init-channels', snapshot);
   });
 
   socket.on('join', (channelName) => {
@@ -78,6 +88,22 @@ io.on('connection', (socket) => {
     socket.to(to).emit('ice', { from: socket.id, candidate });
   });
 
+  socket.on('screen-share-state', ({ channel, sharing }) => {
+    if (!channel) return;
+    socket.to(channel).emit('screen-share-state', { userId: socket.id, sharing });
+    console.log(`[screen] ${userInfo.name} sharing: ${sharing}`);
+  });
+
+
+  socket.on('mute-state', ({ channel, muted, deafened: deaf }) => {
+    if (!channel) return;
+    socket.to(channel).emit('mute-state', { userId: socket.id, muted, deafened: deaf });
+  });
+
+  socket.on('speaking', ({ channel, active }) => {
+    if (!channel) return;
+    socket.to(channel).emit('speaking', { userId: socket.id, active });
+  });
 
   socket.on('chat', ({ channel, msg, displayName, avatar }) => {
     if (!channel || !msg) return;
@@ -112,4 +138,3 @@ const PORT = process.env.PORT || 3000;
 server.listen(PORT, "0.0.0.0", () => {
   console.log(`\n🚀 Echo server running on http://0.0.0.0:${PORT}\n`);
 });
-

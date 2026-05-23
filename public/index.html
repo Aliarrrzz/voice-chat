@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="fa">
+<html lang="en">
 
 <head>
   <meta charset="UTF-8" />
@@ -725,44 +725,97 @@
       opacity: .2;
     }
 
-    /* ─── VOICE CONTROLS (floating card center) ─── */
+    /* ─── VOICE CONTROLS (Discord-style sidebar panel) ─── */
     .chat-center {
       position: relative;
     }
 
     .voice-controls {
       display: none;
-      position: absolute;
-      bottom: 90px;
-      left: 50%;
-      transform: translateX(-50%) translateY(16px);
-      width: min(680px, 90%);
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 22px;
-      height: 64px;
+      flex-direction: column;
       background: var(--bg2);
-      border: 1px solid rgba(34, 211, 160, 0.22);
-      border-radius: 18px;
-      box-shadow: 0 12px 48px rgba(0, 0, 0, 0.55), 0 0 0 1px rgba(34, 211, 160, 0.05);
-      z-index: 50;
+      border-top: 1px solid rgba(34, 211, 160, 0.18);
+      padding: 8px 10px;
+      flex-shrink: 0;
+      animation: vc-in .3s ease;
+      gap: 6px;
     }
 
     .voice-controls.show {
       display: flex;
-      animation: vc-in .38s cubic-bezier(0.34, 1.56, 0.64, 1);
     }
 
     @keyframes vc-in {
       from {
         opacity: 0;
-        transform: translateX(-50%) translateY(28px);
+        transform: translateY(8px);
       }
 
       to {
         opacity: 1;
-        transform: translateX(-50%) translateY(0);
+        transform: none;
       }
+    }
+
+    .vc-top-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .vc-middle {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+    }
+
+    .vc-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid var(--border2);
+      color: var(--text2);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 17px;
+      transition: all .15s;
+      flex-shrink: 0;
+    }
+
+    .vc-btn:hover {
+      background: rgba(255, 255, 255, 0.11);
+      color: var(--text1);
+    }
+
+    .vc-btn.muted {
+      background: rgba(248, 113, 113, 0.15);
+      border-color: rgba(248, 113, 113, 0.3);
+      color: var(--red);
+    }
+
+    .disconnect-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background: rgba(248, 113, 113, 0.15);
+      border: 1px solid rgba(248, 113, 113, 0.3);
+      color: var(--red);
+      font-size: 17px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all .2s;
+      flex-shrink: 0;
+    }
+
+    .disconnect-btn:hover {
+      background: var(--red);
+      color: #fff;
+      border-color: var(--red);
     }
 
     .vc-live-dot {
@@ -798,61 +851,7 @@
     .vc-server-name {
       font-size: 11px;
       color: var(--text3);
-      margin-top: 2px;
-    }
-
-    .vc-middle {
-      display: flex;
-      gap: 6px;
-    }
-
-    .vc-btn {
-      width: 38px;
-      height: 38px;
-      border-radius: 12px;
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid var(--border2);
-      color: var(--text2);
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 18px;
-      transition: all .15s;
-    }
-
-    .vc-btn:hover {
-      background: rgba(255, 255, 255, 0.1);
-      color: var(--text1);
-      transform: scale(1.07);
-    }
-
-    .vc-btn.muted {
-      background: rgba(248, 113, 113, 0.15);
-      border-color: rgba(248, 113, 113, 0.3);
-      color: var(--red);
-    }
-
-    .disconnect-btn {
-      display: flex;
-      align-items: center;
-      gap: 7px;
-      padding: 9px 18px;
-      background: rgba(248, 113, 113, 0.1);
-      border: 1px solid rgba(248, 113, 113, 0.25);
-      border-radius: 12px;
-      color: var(--red);
-      font-size: 13px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all .2s;
-      font-family: 'Inter', sans-serif;
-      white-space: nowrap;
-    }
-
-    .disconnect-btn:hover {
-      background: rgba(248, 113, 113, 0.2);
-      transform: scale(1.02);
+      margin-top: 1px;
     }
 
     /* ─── CHAT INPUT ─── */
@@ -1090,6 +1089,49 @@
       opacity: .7;
     }
 
+    .watch-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      padding: 2px 7px;
+      background: rgba(108, 99, 255, 0.18);
+      border: 1px solid rgba(108, 99, 255, 0.35);
+      border-radius: 6px;
+      color: var(--accent2);
+      font-size: 10px;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: 'Inter', sans-serif;
+      transition: all .15s;
+      white-space: nowrap;
+      margin-left: auto;
+      flex-shrink: 0;
+    }
+
+    .watch-btn:hover {
+      background: rgba(108, 99, 255, 0.3);
+      transform: scale(1.05);
+    }
+
+    .member-screen-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      padding: 2px 7px;
+      background: rgba(108, 99, 255, 0.15);
+      border: 1px solid rgba(108, 99, 255, 0.3);
+      border-radius: 6px;
+      color: var(--accent2);
+      font-size: 10px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all .15s;
+    }
+
+    .member-screen-badge:hover {
+      background: rgba(108, 99, 255, 0.28);
+    }
+
     .screen-preview {
       padding: 8px;
       border-top: 1px solid var(--border);
@@ -1196,11 +1238,11 @@
     <div class="login-bg-orb" style="top:50%;left:50%;transform:translate(-50%,-50%);"></div>
     <div class="login-modal">
       <div class="login-logo">A</div>
-      <h1>خوش اومدی به AURA</h1>
-      <p>یه اسم و آواتار انتخاب کن</p>
-      <div class="login-label">نام کاربری</div>
-      <input class="login-input" id="nameInput" placeholder="اسمتو بنویس..." maxlength="20" />
-      <div class="login-label">آواتار</div>
+      <h1>Welcome to AURA</h1>
+      <p>Pick a name and avatar to get started</p>
+      <div class="login-label">Username</div>
+      <input class="login-input" id="nameInput" placeholder="Enter your name..." maxlength="20" />
+      <div class="login-label">Avatar</div>
       <div class="login-avatars">
         <div class="av-opt sel" data-e="🦊" onclick="pickAv(this)">🦊</div>
         <div class="av-opt" data-e="🐺" onclick="pickAv(this)">🐺</div>
@@ -1211,7 +1253,7 @@
         <div class="av-opt" data-e="🤖" onclick="pickAv(this)">🤖</div>
         <div class="av-opt" data-e="👾" onclick="pickAv(this)">👾</div>
       </div>
-      <button class="login-btn" onclick="enterApp()">ورود به AURA ✦</button>
+      <button class="login-btn" onclick="enterApp()">Enter AURA ✦</button>
     </div>
   </div>
 
@@ -1236,46 +1278,66 @@
         <span style="color:var(--text3);font-size:14px">⌄</span>
       </div>
       <div class="sidebar-body">
-        <div class="ch-section-header">▸ متن</div>
+        <div class="ch-section-header">▸ Text</div>
         <div class="ch-row active">
           <span class="ch-icon" style="font-size:15px;color:var(--text3)">#</span>
           <span class="ch-name">general</span>
         </div>
         <div class="ch-row">
           <span class="ch-icon" style="font-size:15px;color:var(--text3)">#</span>
-          <span class="ch-name">آف‌تاپیک</span>
+          <span class="ch-name">off-topic</span>
         </div>
-        <div class="ch-section-header">▸ صوتی</div>
+        <div class="ch-section-header">▸ Voice</div>
         <div class="ch-row" id="btn-channel1" onclick="joinChannel('channel1','General')">
           <span class="ch-icon">🔊</span>
           <span class="ch-name">General</span>
           <span class="ch-count" id="cnt-channel1">0</span>
         </div>
         <div class="ch-voice-users" id="users-channel1"></div>
-        <div class="ch-row" id="btn-channel2" onclick="joinChannel('channel2','دوستان')">
+        <div class="ch-row" id="btn-channel2" onclick="joinChannel('channel2','Friends')">
           <span class="ch-icon">🔊</span>
-          <span class="ch-name">دوستان</span>
+          <span class="ch-name">Friends</span>
           <span class="ch-count" id="cnt-channel2">0</span>
         </div>
         <div class="ch-voice-users" id="users-channel2"></div>
-        <div class="ch-row" id="btn-channel3" onclick="joinChannel('channel3','خصوصی')">
+        <div class="ch-row" id="btn-channel3" onclick="joinChannel('channel3','Private')">
           <span class="ch-icon">🔊</span>
-          <span class="ch-name">خصوصی</span>
+          <span class="ch-name">Private</span>
           <span class="ch-count" id="cnt-channel3">0</span>
         </div>
         <div class="ch-voice-users" id="users-channel3"></div>
       </div>
+      <!-- Voice Controls (Discord-style, inside sidebar) -->
+      <div class="voice-controls" id="voiceControls">
+        <div class="vc-top-row">
+          <div>
+            <div style="display:flex;align-items:center;gap:6px">
+              <span class="vc-live-dot"></span>
+              <span class="vc-channel-name" id="vcChannelName">General</span>
+            </div>
+            <div class="vc-server-name">AURA Server · Voice Connected</div>
+          </div>
+        </div>
+        <div class="vc-middle">
+          <button class="vc-btn" id="vc-mic" onclick="toggleMic()" title="Mute">🎤</button>
+          <button class="vc-btn" id="vc-deafen" onclick="toggleDeafen()" title="Deafen">🔊</button>
+          <button class="vc-btn" id="vc-screen" onclick="shareScreen()" title="Share Screen">🖥</button>
+          <button class="vc-btn" onclick="showToast('Video — coming soon')" title="Video">📹</button>
+          <button class="disconnect-btn" onclick="disconnectCall()" title="Disconnect">📞</button>
+        </div>
+      </div>
+
       <div class="sidebar-user-panel">
         <div class="user-panel-av" id="panelAv">🦊<div class="av-status-dot"></div>
         </div>
         <div class="user-panel-info">
           <div class="user-panel-name" id="panelName">—</div>
-          <div class="user-panel-status" id="panelStatus">آفلاین</div>
+          <div class="user-panel-status" id="panelStatus">Offline</div>
         </div>
         <div class="user-panel-actions">
-          <button class="panel-btn" id="btn-mic" onclick="toggleMic()" title="میکروفون">🎤</button>
-          <button class="panel-btn" id="btn-deafen" onclick="toggleDeafen()" title="صدا">🔊</button>
-          <button class="panel-btn" onclick="showToast('⚙️ تنظیمات — به زودی')">⚙️</button>
+          <button class="panel-btn" id="btn-mic" onclick="toggleMic()" title="Microphone">🎤</button>
+          <button class="panel-btn" id="btn-deafen" onclick="toggleDeafen()" title="Deafen">🔊</button>
+          <button class="panel-btn" onclick="showToast('⚙️ Settings — coming soon')">⚙️</button>
         </div>
       </div>
     </div>
@@ -1286,11 +1348,11 @@
         <span class="main-header-icon" id="hdrIcon">💬</span>
         <span class="main-header-name" id="hdrName">general</span>
         <div class="main-header-sep"></div>
-        <span class="main-header-desc" id="hdrDesc">کانال عمومی</span>
+        <span class="main-header-desc" id="hdrDesc">General Channel</span>
         <div class="main-header-actions">
-          <button class="hdr-btn" id="btn-screen" onclick="shareScreen()" title="اشتراک صفحه">🖥</button>
-          <button class="hdr-btn" onclick="showToast('🔍 جستجو — به زودی')">🔍</button>
-          <button class="hdr-btn" onclick="showToast('🔔 اعلان‌ها — به زودی')">🔔</button>
+          <button class="hdr-btn" id="btn-screen" onclick="shareScreen()" title="Share Screen">🖥</button>
+          <button class="hdr-btn" onclick="showToast('🔍 Search — coming soon')">🔍</button>
+          <button class="hdr-btn" onclick="showToast('🔔 Notifications — coming soon')">🔔</button>
         </div>
       </div>
 
@@ -1299,32 +1361,13 @@
           <div class="chat-messages" id="chatMessages">
             <div class="empty-chat" id="emptyChat">
               <div class="icon">💬</div>
-              <p style="font-size:14px;color:var(--text3)">اولین نفری باش که پیام می‌فرستی!</p>
-            </div>
-          </div>
-
-          <div class="voice-controls" id="voiceControls">
-            <div class="vc-left">
-              <div style="display:flex;align-items:center">
-                <span class="vc-live-dot"></span>
-                <span class="vc-channel-name" id="vcChannelName">General</span>
-              </div>
-              <span class="vc-server-name">AURA Server · Voice Connected</span>
-            </div>
-            <div class="vc-middle">
-              <button class="vc-btn" id="vc-mic" onclick="toggleMic()" title="Mute">🎤</button>
-              <button class="vc-btn" id="vc-deafen" onclick="toggleDeafen()" title="Deafen">🔊</button>
-              <button class="vc-btn" id="vc-screen" onclick="shareScreen()" title="Share Screen">🖥</button>
-              <button class="vc-btn" onclick="showToast('Video — coming soon')" title="Video">📹</button>
-            </div>
-            <div>
-              <button class="disconnect-btn" onclick="disconnectCall()">📵 Disconnect</button>
+              <p style="font-size:14px;color:var(--text3)">Be the first to send a message!</p>
             </div>
           </div>
 
           <div class="chat-input-area">
             <div class="chat-input-wrap">
-              <input class="chat-input" id="msgInput" placeholder="پیام بنویس..."
+              <input class="chat-input" id="msgInput" placeholder="Send a message..."
                 onkeydown="if(event.key==='Enter') sendMsg()" />
               <button class="send-btn" onclick="sendMsg()">↑</button>
             </div>
@@ -1333,13 +1376,13 @@
 
         <!-- Members sidebar -->
         <div class="members-sidebar">
-          <div class="members-header">اعضای کانال</div>
+          <div class="members-header">Channel Members</div>
           <div class="members-body" id="membersList">
-            <div class="members-empty">هنوز وارد کانالی نشدی</div>
+            <div class="members-empty">You haven't joined a channel yet</div>
           </div>
           <div class="screen-preview" id="screenPreview">
             <div class="screen-preview-label">
-              <div class="live-dot"></div>LIVE — اشتراک صفحه
+              <div class="live-dot"></div>LIVE — Screen Share
             </div>
             <div class="screen-preview-box" id="screenPreviewBox"></div>
           </div>
@@ -1355,7 +1398,7 @@
     let peerConnections = {}, currentChannel = null, clientId = null, socket = null;
     let micEnabled = true, deafened = false;
     let audioContext = null, analyser = null, speakingInterval = null, isSpeaking = false;
-    // track mute/deafen state of each user: { uid: {muted,deafened} }
+    // track mute/deafen state of each user: { uid: {muted,deafened,sharing} }
     const userStates = {};
 
     // ── SOUND EFFECTS (Web Audio API) ──
@@ -1399,12 +1442,12 @@
 
     function enterApp() {
       const n = document.getElementById('nameInput').value.trim();
-      if (!n) { showToast('✏️ یه اسم بنویس!'); return; }
+      if (!n) { showToast('✏️ Enter a name!'); return; }
       myName = n;
       const panelAv = document.getElementById('panelAv');
       panelAv.innerHTML = myAv + '<div class="av-status-dot"></div>';
       document.getElementById('panelName').textContent = myName;
-      document.getElementById('panelStatus').textContent = 'آنلاین';
+      document.getElementById('panelStatus').textContent = 'Online';
       const ls = document.getElementById('loginScreen');
       ls.style.opacity = '0'; ls.style.transition = 'opacity .3s';
       setTimeout(() => { ls.style.display = 'none'; document.getElementById('app').classList.add('show'); initSocket(); }, 300);
@@ -1413,10 +1456,22 @@
 
     function initSocket() {
       socket = io("http://localhost:3000", { transports: ["websocket"] });
-      socket.on("connect", () => { clientId = socket.id; socket.emit('set-info', { name: myName, avatar: myAv }); });
-      socket.on("disconnect", () => { document.getElementById('panelStatus').textContent = 'آفلاین'; });
-      socket.on("channel-users", users => { renderMembers(users); renderSidebarUsers(users); });
+      socket.on("connect", () => {
+        clientId = socket.id;
+        socket.emit('set-info', { name: myName, avatar: myAv });
+      });
+      socket.on("init-channels", (snapshot) => {
+        // snapshot = { channel1: [users], channel2: [users], ... }
+        Object.entries(snapshot).forEach(([ch, users]) => {
+          const el = document.getElementById('cnt-' + ch);
+          if (el) el.textContent = users.length;
+          renderSidebarUsers(ch, users);
+        });
+      });
+      socket.on("disconnect", () => { document.getElementById('panelStatus').textContent = 'Offline'; });
+      socket.on("channel-users", users => { renderMembers(users); renderSidebarUsers(currentChannel, users); });
       socket.on("channel-count", ({ channel, count }) => { const el = document.getElementById('cnt-' + channel); if (el) el.textContent = count; });
+      socket.on("channel-sidebar", ({ channel, users }) => { renderSidebarUsers(channel, users); });
       socket.on("user-joined", async userId => { await createPC(userId, true); playSound('join'); showToast('👤 User joined'); });
       socket.on("user-left", userId => {
         if (peerConnections[userId]) { peerConnections[userId].close(); delete peerConnections[userId]; }
@@ -1428,6 +1483,11 @@
         userStates[userId].muted = muted;
         userStates[userId].deafened = deaf;
         updateUserStatusIcons(userId);
+      });
+      socket.on("screen-share-state", ({ userId, sharing }) => {
+        if (!userStates[userId]) userStates[userId] = {};
+        userStates[userId].sharing = sharing;
+        updateUserScreenIcons(userId);
       });
       socket.on("speaking", ({ userId, active }) => {
         document.querySelectorAll('.member-row').forEach(row => {
@@ -1450,7 +1510,7 @@
       currentChannel = ch;
       document.getElementById('hdrIcon').textContent = '🔊';
       document.getElementById('hdrName').textContent = label;
-      document.getElementById('hdrDesc').textContent = 'کانال صوتی';
+      document.getElementById('hdrDesc').textContent = 'Voice Channel';
       document.getElementById('vcChannelName').textContent = label;
       document.getElementById('voiceControls').classList.add('show');
       playSound('join');
@@ -1461,20 +1521,34 @@
       socket.emit("join", ch);
     }
 
-    function renderSidebarUsers(users) {
-      ['channel1', 'channel2', 'channel3'].forEach(c => { const el = document.getElementById('users-' + c); if (el) el.innerHTML = ''; });
-      if (!currentChannel || !users || users.length === 0) return;
-      const container = document.getElementById('users-' + currentChannel);
+    function renderSidebarUsers(channel, users) {
+      const container = document.getElementById('users-' + channel);
       if (!container) return;
+      container.innerHTML = '';
+      if (!users || users.length === 0) return;
       users.forEach(u => {
-        const isMe = (u.id || u) === clientId;
-        const name = isMe ? myName : (u.name || u.id?.slice(0, 8) || u.slice?.(0, 8) || '???');
+        const uid = u.id || u;
+        const isMe = uid === clientId;
+        const name = isMe ? myName : (u.name || uid?.slice(0, 8) || '???');
         const av = isMe ? myAv : (u.avatar || '👤');
         const div = document.createElement('div');
         div.className = 'ch-voice-user';
-        div.dataset.uid = (u.id || u);
-        div.innerHTML = `<span class="ch-voice-user-av">${av}</span><span class="ch-voice-user-name">${esc(name)}${isMe ? ' (شما)' : ''}</span>`;
+        div.dataset.uid = uid;
+        div.innerHTML = `<span class="ch-voice-user-av">${av}</span><span class="ch-voice-user-name">${esc(name)}${isMe ? ' (you)' : ''}</span>`;
         container.appendChild(div);
+        // re-apply mute/deafen icons
+        const state = userStates[uid] || {};
+        if (state.muted || state.deafened) {
+          let ic = document.createElement('div'); ic.className = 'ch-voice-user-icons';
+          const s = document.createElement('span'); s.className = 'ch-vc-icon'; s.textContent = '🔇'; ic.appendChild(s);
+          div.appendChild(ic);
+        }
+        // re-apply watch button
+        if (state.sharing) {
+          const wb = document.createElement('button'); wb.className = 'watch-btn'; wb.innerHTML = '🖥 Watch';
+          wb.onclick = () => { document.getElementById('screenPreview').classList.add('show'); showToast('👁 Watching screen share'); };
+          div.appendChild(wb);
+        }
       });
     }
 
@@ -1510,28 +1584,32 @@
     function renderMembers(users) {
       const list = document.getElementById('membersList');
       list.innerHTML = '';
-      if (!users || users.length === 0) { list.innerHTML = '<div class="members-empty">هیچ‌کس توی کانال نیست</div>'; return; }
+      if (!users || users.length === 0) { list.innerHTML = '<div class="members-empty">No one is in the channel</div>'; return; }
       const title = document.createElement('div');
       title.className = 'member-section-title';
-      title.textContent = 'در کانال — ' + users.length;
+      title.textContent = 'In Channel — ' + users.length;
       list.appendChild(title);
       users.forEach(u => {
-        const isMe = (u.id || u) === clientId;
-        const name = isMe ? myName : (u.name || u.id?.slice(0, 8) || u.slice?.(0, 8) || '???');
+        const uid = u.id || u;
+        const isMe = uid === clientId;
+        const name = isMe ? myName : (u.name || uid?.slice(0, 8) || '???');
         const av = isMe ? myAv : (u.avatar || '👤');
         const row = document.createElement('div');
         row.className = 'member-row';
-        row.dataset.uid = (u.id || u);
+        row.dataset.uid = uid;
         row.innerHTML = `
       <div class="member-av">${av}<div class="member-status-dot"></div></div>
       <div class="member-info">
-        <div class="member-name">${esc(name)}${isMe ? '<span class="member-you">شما</span>' : ''}</div>
+        <div class="member-name">${esc(name)}${isMe ? '<span class="member-you">you</span>' : ''}</div>
       </div>
-      ${!micEnabled && isMe ? '<span class="member-mic-off">🔇</span>' : ''}
     `;
         list.appendChild(row);
+        // restore existing states after re-render
+        const state = userStates[uid] || {};
+        if (state.muted || state.deafened) updateUserStatusIcons(uid);
+        if (state.sharing) updateUserScreenIcons(uid);
       });
-      renderSidebarUsers(users);
+      if (currentChannel) renderSidebarUsers(currentChannel, users);
     }
 
     async function createPC(userId, isInit) {
@@ -1618,6 +1696,47 @@
       });
     }
 
+    function updateUserScreenIcons(uid) {
+      const state = userStates[uid] || {};
+      const isSharing = state.sharing || false;
+
+      // sidebar watch button
+      document.querySelectorAll('.ch-voice-user').forEach(el => {
+        if (el.dataset.uid !== uid) return;
+        let wb = el.querySelector('.watch-btn');
+        if (isSharing) {
+          if (!wb) {
+            wb = document.createElement('button');
+            wb.className = 'watch-btn';
+            wb.innerHTML = '🖥 Watch';
+            wb.onclick = () => { document.getElementById('screenPreview').classList.add('show'); showToast('👁 Watching screen share'); };
+            el.appendChild(wb);
+          }
+        } else {
+          if (wb) wb.remove();
+        }
+      });
+
+      // right panel member row — screen badge
+      document.querySelectorAll('.member-row').forEach(row => {
+        if (row.dataset.uid !== uid) return;
+        let badge = row.querySelector('.member-screen-badge');
+        if (isSharing) {
+          if (!badge) {
+            badge = document.createElement('span');
+            badge.className = 'member-screen-badge';
+            badge.innerHTML = '🖥 Sharing';
+            badge.title = 'Click to watch';
+            badge.onclick = () => { document.getElementById('screenPreview').classList.add('show'); showToast('👁 Watching screen share'); };
+            let icons = row.querySelector('.member-icons');
+            if (icons) icons.before(badge); else row.appendChild(badge);
+          }
+        } else {
+          if (badge) badge.remove();
+        }
+      });
+    }
+
     async function shareScreen() {
       if (screenStream) {
         screenStream.getTracks().forEach(t => t.stop()); screenStream = null;
@@ -1625,6 +1744,10 @@
         document.getElementById('vc-screen').classList.remove('active');
         document.getElementById('screenPreview').classList.remove('show');
         document.getElementById('screenPreviewBox').innerHTML = '';
+        if (socket && currentChannel) socket.emit('screen-share-state', { channel: currentChannel, sharing: false });
+        if (!userStates[clientId]) userStates[clientId] = {};
+        userStates[clientId].sharing = false;
+        updateUserScreenIcons(clientId);
         showToast('🖥 Screen share stopped'); return;
       }
       try {
@@ -1632,12 +1755,20 @@
         document.getElementById('btn-screen').classList.add('active');
         document.getElementById('vc-screen').classList.add('active');
         showScreenInPreview(screenStream);
+        if (socket && currentChannel) socket.emit('screen-share-state', { channel: currentChannel, sharing: true });
+        if (!userStates[clientId]) userStates[clientId] = {};
+        userStates[clientId].sharing = true;
+        updateUserScreenIcons(clientId);
         screenStream.getTracks()[0].onended = () => {
           screenStream = null;
           document.getElementById('btn-screen').classList.remove('active');
           document.getElementById('vc-screen').classList.remove('active');
           document.getElementById('screenPreview').classList.remove('show');
           document.getElementById('screenPreviewBox').innerHTML = '';
+          if (socket && currentChannel) socket.emit('screen-share-state', { channel: currentChannel, sharing: false });
+          if (!userStates[clientId]) userStates[clientId] = {};
+          userStates[clientId].sharing = false;
+          updateUserScreenIcons(clientId);
         };
         Object.values(peerConnections).forEach(pc => screenStream.getTracks().forEach(t => pc.addTrack(t, screenStream)));
         showToast('🖥 Screen share started');
@@ -1650,20 +1781,23 @@
       if (audioContext) { audioContext.close(); audioContext = null; analyser = null; }
       isSpeaking = false;
       if (localStream) { localStream.getTracks().forEach(t => t.stop()); localStream = null; }
-      if (screenStream) { screenStream.getTracks().forEach(t => t.stop()); screenStream = null; }
+      if (screenStream) {
+        screenStream.getTracks().forEach(t => t.stop()); screenStream = null;
+        if (socket && currentChannel) socket.emit('screen-share-state', { channel: currentChannel, sharing: false });
+      }
       Object.values(peerConnections).forEach(pc => pc.close()); peerConnections = {};
       if (currentChannel && socket) socket.emit('leave', currentChannel);
       currentChannel = null;
       ['channel1', 'channel2', 'channel3'].forEach(c => document.getElementById('btn-' + c).classList.remove('active'));
       document.getElementById('hdrIcon').textContent = '💬';
       document.getElementById('hdrName').textContent = 'general';
-      document.getElementById('hdrDesc').textContent = 'کانال عمومی';
+      document.getElementById('hdrDesc').textContent = 'General Channel';
       document.getElementById('voiceControls').classList.remove('show');
       document.getElementById('btn-screen').classList.remove('active');
       document.getElementById('vc-screen').classList.remove('active');
       document.getElementById('screenPreview').classList.remove('show');
       document.getElementById('screenPreviewBox').innerHTML = '';
-      document.getElementById('membersList').innerHTML = '<div class="members-empty">هنوز وارد کانالی نشدی</div>';
+      document.getElementById('membersList').innerHTML = '<div class="members-empty">You haven\'t joined a channel yet</div>';
       ['channel1', 'channel2', 'channel3'].forEach(c => { const el = document.getElementById('users-' + c); if (el) el.innerHTML = ''; });
       micEnabled = true; updateMicUI();
       showToast('📵 Disconnected');
@@ -1685,7 +1819,7 @@
       div.className = 'msg-group' + (isMe ? ' msg-mine' : '');
       const t = new Date();
       const time = t.getHours().toString().padStart(2, '0') + ':' + t.getMinutes().toString().padStart(2, '0');
-      div.innerHTML = `<div class="msg-av">${av}</div><div class="msg-body"><div class="msg-meta"><span class="msg-author">${esc(isMe ? myName : name)}</span><span class="msg-time">امروز ${time}</span></div><div class="msg-text">${esc(text)}</div></div>`;
+      div.innerHTML = `<div class="msg-av">${av}</div><div class="msg-body"><div class="msg-meta"><span class="msg-author">${esc(isMe ? myName : name)}</span><span class="msg-time">Today ${time}</span></div><div class="msg-text">${esc(text)}</div></div>`;
       msgs.appendChild(div);
       msgs.scrollTop = msgs.scrollHeight;
     }
