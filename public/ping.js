@@ -1,54 +1,55 @@
-class PingMonitor {
-  constructor(socket, options = {}) {
-    this.socket = socket;
-    this.interval = options.interval || 3000;   
-    this.history  = [];                         
-    this.current  = null;
-    this.timer    = null;
-    this.onUpdate = options.onUpdate || (() => {});
+// ─── PING MANAGER ────────────────────────────────────────────
+const PingManager = {
+  _timer: null,
+  _channels: ['channel1', 'channel2', 'channel3'],
 
-    this.socket.on('pong', (ts) => {
-      const rtt = Date.now() - ts;
-      this._record(rtt);
+  start(channelId) {
+    this.stop();
+    // همه رو idle کن
+    this._channels.forEach(ch => {
+      if (ch === channelId) return;
+      this._setIdle(ch);
     });
-  }
+    // کانال جاری رو connected کن
+    const wifiEl = document.getElementById('wifi-' + channelId);
+    const statEl = document.getElementById('pingstatus-' + channelId);
+    if (wifiEl) wifiEl.classList.add('connected');
+    if (statEl) { statEl.className = 'ping-status-connected'; statEl.textContent = '🟢 Connected'; }
 
-  start() {
-    this.timer = setInterval(() => this._ping(), this.interval);
-    this._ping(); 
-  }
+    const doPing = () => {
+      if (!State.socket || !State.currentChannel) return;
+      const t = Date.now();
+      State.socket.emit('ping', t);
+      State.socket.once('pong', ts => {
+        const ms    = Date.now() - ts;
+        const color = ms < 50 ? 'var(--green)' : ms < 100 ? '#fbbf24' : 'var(--red)';
+        const label = ms < 50 ? 'Good'         : ms < 100 ? 'Fair'    : 'Poor';
+        const pingEl = document.getElementById('pingval-'   + channelId);
+        const qualEl = document.getElementById('pingqual-'  + channelId);
+        const wEl    = document.getElementById('wifi-'      + channelId);
+        if (pingEl) { pingEl.textContent = ms + ' ms'; pingEl.style.color = color; }
+        if (qualEl) { qualEl.textContent = label;       qualEl.style.color = color; }
+        if (wEl)    { wEl.style.color = color; }
+      });
+    };
+
+    doPing();
+    this._timer = setInterval(doPing, 3000);
+  },
 
   stop() {
-    clearInterval(this.timer);
-  }
+    if (this._timer) { clearInterval(this._timer); this._timer = null; }
+    this._channels.forEach(ch => this._setIdle(ch));
+  },
 
-  _ping() {
-    this.socket.emit('ping', Date.now());
-  }
-
-  _record(rtt) {
-    this.current = rtt;
-    this.history.push(rtt);
-    if (this.history.length > 10) this.history.shift();
-    this.onUpdate(this._stats());
-  }
-
-  _stats() {
-    const h = this.history;
-    return {
-      current: this.current,
-      avg:  Math.round(h.reduce((a, b) => a + b, 0) / h.length),
-      min:  Math.min(...h),
-      max:  Math.max(...h),
-      quality: this._quality(this.current),
-    };
-  }
-
-  
-  _quality(ms) {
-    if (ms < 50)  return { label: 'Perfect',   color: '#43b581', icon: '🟢' };
-    if (ms < 100) return { label: 'Good',    color: '#faa61a', icon: '🟡' };
-    if (ms < 200) return { label: 'Avarage',  color: '#f04747', icon: '🟠' };
-    return              { label: 'Poor',    color: '#f04747', icon: '🔴' };
-  }
-}
+  _setIdle(ch) {
+    const pingEl = document.getElementById('pingval-'    + ch);
+    const qualEl = document.getElementById('pingqual-'   + ch);
+    const statEl = document.getElementById('pingstatus-' + ch);
+    const wifiEl = document.getElementById('wifi-'       + ch);
+    if (pingEl) { pingEl.textContent = '-- ms'; pingEl.style.color = ''; }
+    if (qualEl) { qualEl.textContent = '—';     qualEl.style.color = ''; }
+    if (statEl) { statEl.className = 'ping-status-idle'; statEl.textContent = '⚪ Not Connected'; }
+    if (wifiEl) { wifiEl.classList.remove('connected'); wifiEl.style.color = ''; }
+  },
+};

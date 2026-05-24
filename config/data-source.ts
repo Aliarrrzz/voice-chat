@@ -1,6 +1,6 @@
 import 'reflect-metadata';
 import { DataSource } from 'typeorm';
-import { User } from '../entities/USer';
+import { User } from '../entities/User';
 import { Channel } from '../entities/Channel';
 import { Message } from '../entities/Message';
 import { VoiceSession } from '../entities/VoiceSession';
