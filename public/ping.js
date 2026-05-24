@@ -1,10 +1,8 @@
-// public/ping.js
-
 class PingMonitor {
   constructor(socket, options = {}) {
     this.socket = socket;
-    this.interval = options.interval || 3000;   // هر ۳ ثانیه
-    this.history  = [];                          // آخرین ۱۰ ping
+    this.interval = options.interval || 3000;   
+    this.history  = [];                         
     this.current  = null;
     this.timer    = null;
     this.onUpdate = options.onUpdate || (() => {});
@@ -17,7 +15,7 @@ class PingMonitor {
 
   start() {
     this.timer = setInterval(() => this._ping(), this.interval);
-    this._ping(); // اول یه بار سریع بزن
+    this._ping(); 
   }
 
   stop() {
@@ -46,11 +44,11 @@ class PingMonitor {
     };
   }
 
-  // کیفیت اتصال
+  
   _quality(ms) {
-    if (ms < 50)  return { label: 'عالی',   color: '#43b581', icon: '🟢' };
-    if (ms < 100) return { label: 'خوب',    color: '#faa61a', icon: '🟡' };
-    if (ms < 200) return { label: 'متوسط',  color: '#f04747', icon: '🟠' };
-    return              { label: 'ضعیف',    color: '#f04747', icon: '🔴' };
+    if (ms < 50)  return { label: 'Perfect',   color: '#43b581', icon: '🟢' };
+    if (ms < 100) return { label: 'Good',    color: '#faa61a', icon: '🟡' };
+    if (ms < 200) return { label: 'Avarage',  color: '#f04747', icon: '🟠' };
+    return              { label: 'Poor',    color: '#f04747', icon: '🔴' };
   }
 }

@@ -1822,14 +1822,13 @@
         clientId = socket.id;
         socket.emit('set-info', { name: myName, avatar: myAv });
         document.getElementById('panelStatus').textContent = 'Online';
-        // اگه reconnect بود دوباره join کن
         if (currentChannel) {
           socket.emit('join', currentChannel);
           showToast('✅ Reconnected!');
         }
       });
 
-      socket.on("pong", () => { /* handled via socket.once in startRealPing */ });
+      socket.on("pong", () => {});
 
       socket.on("disconnect", (reason) => {
         document.getElementById('panelStatus').textContent = 'Offline';
@@ -1868,7 +1867,6 @@
       socket.on("user-left", userId => {
         if (peerConnections[userId]) { peerConnections[userId].close(); delete peerConnections[userId]; }
         delete userStates[userId];
-        // حذف remote video
         const wrap = document.getElementById('remote-vid-wrap-' + userId);
         if (wrap) wrap.remove();
         playSound('leave'); showToast('👤 User left');
@@ -1899,7 +1897,6 @@
 
       socket.on("chat", data => { appendMsg(data.from, data.displayName || data.from.slice(0, 6), data.avatar || '👤', data.msg, data.from === clientId, null); });
 
-      // ── لود تاریخچه chat ──
       socket.on("chat-history", (messages) => {
         const msgs = document.getElementById('chatMessages');
         document.getElementById('emptyChat')?.remove();
@@ -2026,7 +2023,6 @@
       </div>
     `;
         list.appendChild(row);
-        // restore existing states after re-render
         const state = userStates[uid] || {};
         if (state.muted || state.deafened) updateUserStatusIcons(uid);
         if (state.sharing) updateUserScreenIcons(uid);
@@ -2046,7 +2042,6 @@
           const a = document.createElement('audio'); a.srcObject = e.streams[0]; a.autoplay = true; a.style.display = 'none'; document.body.appendChild(a);
         }
         if (e.track.kind === 'video') {
-          // تشخیص screen share vs camera
           const label = e.track.label?.toLowerCase() || '';
           const isScreen = label.includes('screen') || label.includes('display') || label.includes('monitor');
           if (isScreen) {

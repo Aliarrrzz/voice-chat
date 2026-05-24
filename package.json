@@ -4,7 +4,7 @@
   "description": "AURA voice chat backend",
   "main": "server.js",
   "scripts": {
-    "dev": "ts-node src/server.ts",
+    "dev": "ts-node server.ts",
     "build": "tsc",
     "start": "node dist/server.js"
   },
