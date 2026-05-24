@@ -725,7 +725,7 @@
       opacity: .2;
     }
 
-    /* ─── VOICE CONTROLS (Discord-style sidebar panel) ─── */
+    /* ─── VOICE CONTROLS — Discord style ─── */
     .chat-center {
       position: relative;
     }
@@ -733,12 +733,10 @@
     .voice-controls {
       display: none;
       flex-direction: column;
-      background: var(--bg2);
-      border-top: 1px solid rgba(34, 211, 160, 0.18);
-      padding: 8px 10px;
+      background: var(--bg1);
       flex-shrink: 0;
-      animation: vc-in .3s ease;
-      gap: 6px;
+      border-top: 1px solid var(--border);
+      animation: vc-in .25s ease;
     }
 
     .voice-controls.show {
@@ -748,7 +746,7 @@
     @keyframes vc-in {
       from {
         opacity: 0;
-        transform: translateY(8px);
+        transform: translateY(6px);
       }
 
       to {
@@ -757,65 +755,28 @@
       }
     }
 
-    .vc-top-row {
+    /* top green bar — "Voice Connected" */
+    .vc-status-bar {
+      padding: 6px 10px 5px;
       display: flex;
       align-items: center;
       justify-content: space-between;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
     }
 
-    .vc-middle {
+    .vc-status-left {
       display: flex;
-      gap: 6px;
-      align-items: center;
+      flex-direction: column;
+      gap: 1px;
     }
 
-    .vc-btn {
-      width: 36px;
-      height: 36px;
-      border-radius: 10px;
-      background: rgba(255, 255, 255, 0.06);
-      border: 1px solid var(--border2);
-      color: var(--text2);
-      cursor: pointer;
+    .vc-connected-label {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--green);
       display: flex;
       align-items: center;
-      justify-content: center;
-      font-size: 17px;
-      transition: all .15s;
-      flex-shrink: 0;
-    }
-
-    .vc-btn:hover {
-      background: rgba(255, 255, 255, 0.11);
-      color: var(--text1);
-    }
-
-    .vc-btn.muted {
-      background: rgba(248, 113, 113, 0.15);
-      border-color: rgba(248, 113, 113, 0.3);
-      color: var(--red);
-    }
-
-    .disconnect-btn {
-      width: 36px;
-      height: 36px;
-      border-radius: 10px;
-      background: rgba(248, 113, 113, 0.15);
-      border: 1px solid rgba(248, 113, 113, 0.3);
-      color: var(--red);
-      font-size: 17px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: all .2s;
-      flex-shrink: 0;
-    }
-
-    .disconnect-btn:hover {
-      background: var(--red);
-      color: #fff;
-      border-color: var(--red);
+      gap: 5px;
     }
 
     .vc-live-dot {
@@ -823,8 +784,6 @@
       height: 8px;
       border-radius: 50%;
       background: var(--green);
-      display: inline-block;
-      margin-right: 7px;
       flex-shrink: 0;
       animation: pulse-dot 2s ease-in-out infinite;
     }
@@ -837,21 +796,339 @@
       }
 
       50% {
-        box-shadow: 0 0 0 6px rgba(34, 211, 160, 0);
+        box-shadow: 0 0 0 5px rgba(34, 211, 160, 0);
       }
     }
 
     .vc-channel-name {
-      font-size: 13px;
-      font-weight: 700;
-      color: var(--green);
-      letter-spacing: .2px;
-    }
-
-    .vc-server-name {
       font-size: 11px;
       color: var(--text3);
-      margin-top: 1px;
+      padding-left: 13px;
+    }
+
+    /* the 4 icon buttons row */
+    .vc-buttons-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+      padding: 4px 6px 6px;
+    }
+
+    .vc-btn {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      padding: 5px 8px;
+      border-radius: 8px;
+      transition: background .15s;
+      color: var(--text2);
+      flex: 1;
+    }
+
+    .vc-btn:hover {
+      background: rgba(255, 255, 255, 0.06);
+      color: var(--text1);
+    }
+
+    .vc-btn-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: #3a3c43;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 15px;
+      transition: all .15s;
+    }
+
+    .vc-btn:hover .vc-btn-icon {
+      background: #4a4c55;
+    }
+
+    .vc-btn.muted .vc-btn-icon {
+      background: rgba(248, 113, 113, 0.2);
+      color: var(--red);
+    }
+
+    .vc-btn.active .vc-btn-icon {
+      background: rgba(108, 99, 255, 0.25);
+      color: var(--accent2);
+    }
+
+    .vc-btn-label {
+      font-size: 10px;
+      font-weight: 500;
+      color: var(--text3);
+      white-space: nowrap;
+    }
+
+    .disconnect-btn {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      padding: 5px 8px;
+      border-radius: 8px;
+      transition: background .15s;
+      flex: 1;
+    }
+
+    .disconnect-btn:hover {
+      background: rgba(248, 113, 113, 0.08);
+    }
+
+    .disconnect-btn .vc-btn-icon {
+      background: rgba(248, 113, 113, 0.18);
+      color: var(--red);
+    }
+
+    .disconnect-btn:hover .vc-btn-icon {
+      background: var(--red);
+      color: #fff;
+    }
+
+    .disconnect-btn .vc-btn-label {
+      color: var(--red);
+    }
+
+    /* ─── PING / WIFI ICON ─── */
+    .wifi-icon {
+      display: none;
+      color: var(--text3);
+      cursor: default;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      position: relative;
+      padding: 2px;
+      border-radius: 4px;
+      transition: color .15s;
+    }
+
+    .ch-row:hover .wifi-icon {
+      display: flex;
+    }
+
+    .wifi-icon:hover {
+      color: var(--text1);
+    }
+
+    .wifi-icon.connected {
+      color: var(--green);
+      display: flex;
+    }
+
+    .ch-row {
+      position: relative;
+    }
+
+    .ping-tooltip {
+      display: none;
+      position: absolute;
+      left: calc(100% + 10px);
+      top: 50%;
+      transform: translateY(-50%);
+      background: #18191c;
+      border: 1px solid var(--border2);
+      border-radius: 8px;
+      padding: 8px 12px;
+      min-width: 170px;
+      z-index: 200;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+      pointer-events: none;
+    }
+
+    .ping-tooltip::before {
+      content: '';
+      position: absolute;
+      right: 100%;
+      top: 50%;
+      transform: translateY(-50%);
+      border: 6px solid transparent;
+      border-right-color: #18191c;
+    }
+
+    .wifi-icon:hover .ping-tooltip {
+      display: block;
+    }
+
+    .ping-tooltip-title {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text1);
+      margin-bottom: 6px;
+    }
+
+    .ping-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      font-size: 11px;
+    }
+
+    .ping-label {
+      color: var(--text3);
+    }
+
+    .ping-value {
+      font-weight: 600;
+      color: var(--green);
+    }
+
+    .ping-status-connected {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--green);
+      margin-top: 6px;
+      padding-top: 6px;
+      border-top: 1px solid var(--border);
+    }
+
+    .ping-status-idle {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 11px;
+      color: var(--text3);
+      margin-top: 6px;
+      padding-top: 6px;
+      border-top: 1px solid var(--border);
+    }
+
+    /* ─── SCREEN SHARE FULLSCREEN VIEWER ─── */
+    #screenViewer {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 5000;
+      background: #000;
+      flex-direction: column;
+      animation: sv-in .2s ease;
+    }
+
+    #screenViewer.show {
+      display: flex;
+    }
+
+    @keyframes sv-in {
+      from {
+        opacity: 0;
+      }
+
+      to {
+        opacity: 1;
+      }
+    }
+
+    .sv-topbar {
+      height: 44px;
+      background: rgba(18, 19, 24, 0.9);
+      backdrop-filter: blur(10px);
+      display: flex;
+      align-items: center;
+      padding: 0 16px;
+      gap: 12px;
+      flex-shrink: 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    .sv-live-badge {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      background: rgba(248, 71, 71, 0.2);
+      border: 1px solid rgba(248, 71, 71, 0.4);
+      border-radius: 6px;
+      padding: 3px 9px;
+      font-size: 11px;
+      font-weight: 700;
+      color: #f87171;
+      letter-spacing: 1px;
+    }
+
+    .sv-live-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #f87171;
+      animation: blink 1.2s infinite;
+    }
+
+    .sv-presenter {
+      font-size: 13px;
+      color: var(--text2);
+    }
+
+    .sv-presenter strong {
+      color: var(--text1);
+    }
+
+    .sv-close-btn {
+      margin-left: auto;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid var(--border2);
+      border-radius: 8px;
+      color: var(--text2);
+      font-size: 13px;
+      font-weight: 600;
+      padding: 5px 14px;
+      cursor: pointer;
+      transition: all .15s;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .sv-close-btn:hover {
+      background: rgba(248, 113, 113, 0.15);
+      border-color: rgba(248, 113, 113, 0.4);
+      color: var(--red);
+    }
+
+    .sv-video-area {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      position: relative;
+      background: #0a0b0e;
+    }
+
+    .sv-video-area video {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+      border-radius: 4px;
+    }
+
+    .sv-no-stream {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      color: var(--text3);
+    }
+
+    .sv-no-stream .icon {
+      font-size: 48px;
+      opacity: .3;
+    }
+
+    .sv-no-stream p {
+      font-size: 14px;
     }
 
     /* ─── CHAT INPUT ─── */
@@ -1292,38 +1569,95 @@
           <span class="ch-icon">🔊</span>
           <span class="ch-name">General</span>
           <span class="ch-count" id="cnt-channel1">0</span>
+          <span class="wifi-icon" id="wifi-channel1">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+              stroke-linecap="round" stroke-linejoin="round">
+              <path d="M5 12.55a11 11 0 0 1 14.08 0" />
+              <path d="M1.42 9a16 16 0 0 1 21.16 0" />
+              <path d="M8.53 16.11a6 6 0 0 1 6.95 0" />
+              <circle cx="12" cy="20" r="1" fill="currentColor" stroke="none" />
+            </svg>
+            <div class="ping-tooltip" id="ping-channel1">
+              <div class="ping-tooltip-title">🔊 General</div>
+              <div class="ping-row"><span class="ping-label">Ping</span><span class="ping-value"
+                  id="pingval-channel1">-- ms</span></div>
+              <div class="ping-row"><span class="ping-label">Quality</span><span class="ping-value"
+                  id="pingqual-channel1">—</span></div>
+              <div class="ping-status-idle" id="pingstatus-channel1">⚪ Not Connected</div>
+            </div>
+          </span>
         </div>
         <div class="ch-voice-users" id="users-channel1"></div>
         <div class="ch-row" id="btn-channel2" onclick="joinChannel('channel2','Friends')">
           <span class="ch-icon">🔊</span>
           <span class="ch-name">Friends</span>
           <span class="ch-count" id="cnt-channel2">0</span>
+          <span class="wifi-icon" id="wifi-channel2">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+              stroke-linecap="round" stroke-linejoin="round">
+              <path d="M5 12.55a11 11 0 0 1 14.08 0" />
+              <path d="M1.42 9a16 16 0 0 1 21.16 0" />
+              <path d="M8.53 16.11a6 6 0 0 1 6.95 0" />
+              <circle cx="12" cy="20" r="1" fill="currentColor" stroke="none" />
+            </svg>
+            <div class="ping-tooltip" id="ping-channel2">
+              <div class="ping-tooltip-title">🔊 Friends</div>
+              <div class="ping-row"><span class="ping-label">Ping</span><span class="ping-value"
+                  id="pingval-channel2">-- ms</span></div>
+              <div class="ping-row"><span class="ping-label">Quality</span><span class="ping-value"
+                  id="pingqual-channel2">—</span></div>
+              <div class="ping-status-idle" id="pingstatus-channel2">⚪ Not Connected</div>
+            </div>
+          </span>
         </div>
         <div class="ch-voice-users" id="users-channel2"></div>
         <div class="ch-row" id="btn-channel3" onclick="joinChannel('channel3','Private')">
           <span class="ch-icon">🔊</span>
           <span class="ch-name">Private</span>
           <span class="ch-count" id="cnt-channel3">0</span>
+          <span class="wifi-icon" id="wifi-channel3">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+              stroke-linecap="round" stroke-linejoin="round">
+              <path d="M5 12.55a11 11 0 0 1 14.08 0" />
+              <path d="M1.42 9a16 16 0 0 1 21.16 0" />
+              <path d="M8.53 16.11a6 6 0 0 1 6.95 0" />
+              <circle cx="12" cy="20" r="1" fill="currentColor" stroke="none" />
+            </svg>
+            <div class="ping-tooltip" id="ping-channel3">
+              <div class="ping-tooltip-title">🔊 Private</div>
+              <div class="ping-row"><span class="ping-label">Ping</span><span class="ping-value"
+                  id="pingval-channel3">-- ms</span></div>
+              <div class="ping-row"><span class="ping-label">Quality</span><span class="ping-value"
+                  id="pingqual-channel3">—</span></div>
+              <div class="ping-status-idle" id="pingstatus-channel3">⚪ Not Connected</div>
+            </div>
+          </span>
         </div>
         <div class="ch-voice-users" id="users-channel3"></div>
       </div>
       <!-- Voice Controls (Discord-style, inside sidebar) -->
       <div class="voice-controls" id="voiceControls">
-        <div class="vc-top-row">
-          <div>
-            <div style="display:flex;align-items:center;gap:6px">
-              <span class="vc-live-dot"></span>
-              <span class="vc-channel-name" id="vcChannelName">General</span>
+        <div class="vc-status-bar">
+          <div class="vc-status-left">
+            <div class="vc-connected-label">
+              <span class="vc-live-dot"></span>Voice Connected
             </div>
-            <div class="vc-server-name">AURA Server · Voice Connected</div>
+            <div class="vc-channel-name" id="vcChannelName">General · AURA Server</div>
           </div>
         </div>
-        <div class="vc-middle">
-          <button class="vc-btn" id="vc-mic" onclick="toggleMic()" title="Mute">🎤</button>
-          <button class="vc-btn" id="vc-deafen" onclick="toggleDeafen()" title="Deafen">🔊</button>
-          <button class="vc-btn" id="vc-screen" onclick="shareScreen()" title="Share Screen">🖥</button>
-          <button class="vc-btn" onclick="showToast('Video — coming soon')" title="Video">📹</button>
-          <button class="disconnect-btn" onclick="disconnectCall()" title="Disconnect">📞</button>
+        <div class="vc-buttons-row">
+          <button class="vc-btn" id="vc-screen" onclick="shareScreen()">
+            <div class="vc-btn-icon">🖥</div>
+            <span class="vc-btn-label">Screen</span>
+          </button>
+          <button class="vc-btn" id="btn-video" onclick="toggleVideo()">
+            <div class="vc-btn-icon">📹</div>
+            <span class="vc-btn-label">Video</span>
+          </button>
+          <button class="disconnect-btn" onclick="disconnectCall()">
+            <div class="vc-btn-icon">📞</div>
+            <span class="vc-btn-label">Leave</span>
+          </button>
         </div>
       </div>
 
@@ -1391,15 +1725,34 @@
     </div>
   </div>
 
+  <!-- SCREEN SHARE VIEWER -->
+  <div id="screenViewer">
+    <div class="sv-topbar">
+      <div class="sv-live-badge">
+        <div class="sv-live-dot"></div>LIVE
+      </div>
+      <div class="sv-presenter">Screen shared by <strong id="svPresenterName">—</strong></div>
+      <button class="sv-close-btn" onclick="closeScreenViewer()">✕ Close</button>
+    </div>
+    <div class="sv-video-area" id="svVideoArea">
+      <div class="sv-no-stream" id="svNoStream">
+        <div class="icon">🖥</div>
+        <p>Waiting for stream...</p>
+      </div>
+    </div>
+  </div>
+
   <div class="toast" id="toast"></div>
 
   <script>
     let myName = '', myAv = '🦊', localStream = null, screenStream = null;
     let peerConnections = {}, currentChannel = null, clientId = null, socket = null;
-    let micEnabled = true, deafened = false;
+    let micEnabled = true, deafened = false, videoEnabled = false;
     let audioContext = null, analyser = null, speakingInterval = null, isSpeaking = false;
     // track mute/deafen state of each user: { uid: {muted,deafened,sharing} }
     const userStates = {};
+    // track real names/avatars by socket ID
+    const userNameMap = {};
 
     // ── SOUND EFFECTS (Web Audio API) ──
     function playSound(type) {
@@ -1455,33 +1808,75 @@
     document.getElementById('nameInput').addEventListener('keydown', e => { if (e.key === 'Enter') enterApp(); });
 
     function initSocket() {
-      socket = io("http://localhost:3000", { transports: ["websocket"] });
+      socket = io("http://localhost:3000", {
+        transports: ["websocket"],
+        auth: { token: localStorage.getItem('aura_token') || null },
+        reconnection: true,
+        reconnectionAttempts: Infinity,
+        reconnectionDelay: 1000,
+        reconnectionDelayMax: 5000,
+        timeout: 10000,
+      });
+
       socket.on("connect", () => {
         clientId = socket.id;
         socket.emit('set-info', { name: myName, avatar: myAv });
+        document.getElementById('panelStatus').textContent = 'Online';
+        // اگه reconnect بود دوباره join کن
+        if (currentChannel) {
+          socket.emit('join', currentChannel);
+          showToast('✅ Reconnected!');
+        }
       });
+
+      socket.on("pong", () => { /* handled via socket.once in startRealPing */ });
+
+      socket.on("disconnect", (reason) => {
+        document.getElementById('panelStatus').textContent = 'Offline';
+        if (reason !== 'io client disconnect') showToast('⚠️ Connection lost, reconnecting...');
+      });
+
+      socket.on("reconnect_attempt", (attempt) => {
+        document.getElementById('panelStatus').textContent = `Reconnecting (${attempt})...`;
+      });
+
+      socket.on("reconnect_failed", () => {
+        document.getElementById('panelStatus').textContent = 'Connection failed';
+        showToast('❌ Could not reconnect. Please refresh.');
+      });
+
       socket.on("init-channels", (snapshot) => {
-        // snapshot = { channel1: [users], channel2: [users], ... }
         Object.entries(snapshot).forEach(([ch, users]) => {
+          users.forEach(u => { if (u.id && u.name) userNameMap[u.id] = { name: u.name, avatar: u.avatar }; });
           const el = document.getElementById('cnt-' + ch);
           if (el) el.textContent = users.length;
           renderSidebarUsers(ch, users);
         });
       });
-      socket.on("disconnect", () => { document.getElementById('panelStatus').textContent = 'Offline'; });
-      socket.on("channel-users", users => { renderMembers(users); renderSidebarUsers(currentChannel, users); });
+
+      socket.on("channel-users", users => {
+        users.forEach(u => { if (u.id && u.name) userNameMap[u.id] = { name: u.name, avatar: u.avatar }; });
+        renderMembers(users); renderSidebarUsers(currentChannel, users);
+      });
       socket.on("channel-count", ({ channel, count }) => { const el = document.getElementById('cnt-' + channel); if (el) el.textContent = count; });
-      socket.on("channel-sidebar", ({ channel, users }) => { renderSidebarUsers(channel, users); });
+      socket.on("channel-sidebar", ({ channel, users }) => {
+        users.forEach(u => { if (u.id && u.name) userNameMap[u.id] = { name: u.name, avatar: u.avatar }; });
+        renderSidebarUsers(channel, users);
+      });
+
       socket.on("user-joined", async userId => { await createPC(userId, true); playSound('join'); showToast('👤 User joined'); });
       socket.on("user-left", userId => {
         if (peerConnections[userId]) { peerConnections[userId].close(); delete peerConnections[userId]; }
         delete userStates[userId];
+        // حذف remote video
+        const wrap = document.getElementById('remote-vid-wrap-' + userId);
+        if (wrap) wrap.remove();
         playSound('leave'); showToast('👤 User left');
       });
+
       socket.on("mute-state", ({ userId, muted, deafened: deaf }) => {
         if (!userStates[userId]) userStates[userId] = {};
-        userStates[userId].muted = muted;
-        userStates[userId].deafened = deaf;
+        userStates[userId].muted = muted; userStates[userId].deafened = deaf;
         updateUserStatusIcons(userId);
       });
       socket.on("screen-share-state", ({ userId, sharing }) => {
@@ -1497,10 +1892,20 @@
           if (el.dataset.uid === userId) el.classList.toggle('speaking-user', active);
         });
       });
+
       socket.on("offer", async ({ from, offer }) => { const pc = await createPC(from, false); await pc.setRemoteDescription(new RTCSessionDescription(offer)); const ans = await pc.createAnswer(); await pc.setLocalDescription(ans); socket.emit("answer", { to: from, answer: ans }); });
       socket.on("answer", async ({ from, answer }) => { const pc = peerConnections[from]; if (pc) await pc.setRemoteDescription(new RTCSessionDescription(answer)); });
       socket.on("ice", async ({ from, candidate }) => { const pc = peerConnections[from]; if (pc) try { await pc.addIceCandidate(new RTCIceCandidate(candidate)); } catch (e) { } });
-      socket.on("chat", data => { appendMsg(data.from, data.displayName || data.from.slice(0, 6), data.avatar || '👤', data.msg, data.from === clientId); });
+
+      socket.on("chat", data => { appendMsg(data.from, data.displayName || data.from.slice(0, 6), data.avatar || '👤', data.msg, data.from === clientId, null); });
+
+      // ── لود تاریخچه chat ──
+      socket.on("chat-history", (messages) => {
+        const msgs = document.getElementById('chatMessages');
+        document.getElementById('emptyChat')?.remove();
+        messages.forEach(m => appendMsg(null, m.displayName, m.avatar, m.msg, false, new Date(m.timestamp)));
+        msgs.scrollTop = msgs.scrollHeight;
+      });
     }
 
     async function joinChannel(ch, label) {
@@ -1511,12 +1916,29 @@
       document.getElementById('hdrIcon').textContent = '🔊';
       document.getElementById('hdrName').textContent = label;
       document.getElementById('hdrDesc').textContent = 'Voice Channel';
-      document.getElementById('vcChannelName').textContent = label;
+      document.getElementById('vcChannelName').textContent = label + ' · AURA Server';
+      startRealPing(ch);
       document.getElementById('voiceControls').classList.add('show');
       playSound('join');
       if (!localStream) {
-        try { localStream = await navigator.mediaDevices.getUserMedia({ audio: true }); micEnabled = true; updateMicUI(); startVoiceDetection(); }
-        catch (err) { showToast('🎤 Microphone access denied'); return; }
+        try {
+          // سعی کن audio + video بگیر
+          localStream = await navigator.mediaDevices.getUserMedia({ audio: true, video: { width: 1280, height: 720, facingMode: 'user' } });
+          micEnabled = true; videoEnabled = true;
+          updateMicUI(); updateVideoUI();
+          startVoiceDetection();
+          showLocalVideo(localStream);
+        } catch {
+          // اگه video نداشت فقط audio بگیر
+          try {
+            localStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+            micEnabled = true; videoEnabled = false;
+            updateMicUI(); updateVideoUI();
+            startVoiceDetection();
+          } catch {
+            showToast('🎤 Microphone access denied'); return;
+          }
+        }
       }
       socket.emit("join", ch);
     }
@@ -1546,7 +1968,7 @@
         // re-apply watch button
         if (state.sharing) {
           const wb = document.createElement('button'); wb.className = 'watch-btn'; wb.innerHTML = '🖥 Watch';
-          wb.onclick = () => { document.getElementById('screenPreview').classList.add('show'); showToast('👁 Watching screen share'); };
+          wb.onclick = (e) => { e.stopPropagation(); watchUserScreen(uid, name); };
           div.appendChild(wb);
         }
       });
@@ -1620,13 +2042,100 @@
       if (screenStream) screenStream.getTracks().forEach(t => pc.addTrack(t, screenStream));
       pc.onicecandidate = e => { if (e.candidate) socket.emit("ice", { to: userId, candidate: e.candidate }); };
       pc.ontrack = e => {
-        if (e.track.kind === 'audio') { const a = document.createElement('audio'); a.srcObject = e.streams[0]; a.autoplay = true; a.style.display = 'none'; document.body.appendChild(a); }
-        if (e.track.kind === 'video') showScreenInPreview(e.streams[0]);
+        if (e.track.kind === 'audio') {
+          const a = document.createElement('audio'); a.srcObject = e.streams[0]; a.autoplay = true; a.style.display = 'none'; document.body.appendChild(a);
+        }
+        if (e.track.kind === 'video') {
+          // تشخیص screen share vs camera
+          const label = e.track.label?.toLowerCase() || '';
+          const isScreen = label.includes('screen') || label.includes('display') || label.includes('monitor');
+          if (isScreen) {
+            showScreenInPreview(e.streams[0]);
+            const presenterName = userNameMap[userId]?.name || userId?.slice(0, 8) || '—';
+            openScreenViewer(e.streams[0], presenterName);
+          } else {
+            showRemoteVideo(userId, e.streams[0]);
+          }
+        }
       };
       if (isInit) { const off = await pc.createOffer(); await pc.setLocalDescription(off); socket.emit("offer", { to: userId, offer: off }); }
       return pc;
     }
 
+    // ─── VIDEO HELPERS ───
+    function showLocalVideo(stream) {
+      const videoTrack = stream.getVideoTracks()[0];
+      if (!videoTrack) return;
+      let v = document.getElementById('local-video');
+      if (!v) {
+        v = document.createElement('video');
+        v.id = 'local-video'; v.autoplay = true; v.muted = true; v.playsInline = true;
+        v.style.cssText = 'width:120px;height:90px;border-radius:10px;object-fit:cover;border:2px solid var(--accent);position:fixed;bottom:90px;right:16px;z-index:100;box-shadow:0 4px 20px rgba(0,0,0,0.5);';
+        document.body.appendChild(v);
+      }
+      v.srcObject = stream;
+      v.style.display = 'block';
+    }
+
+    function showRemoteVideo(uid, stream) {
+      let container = document.getElementById('remote-videos');
+      if (!container) {
+        container = document.createElement('div');
+        container.id = 'remote-videos';
+        container.style.cssText = 'position:fixed;bottom:90px;right:150px;display:flex;gap:8px;z-index:100;flex-wrap:wrap;max-width:400px;justify-content:flex-end;';
+        document.body.appendChild(container);
+      }
+      if (document.getElementById('remote-vid-wrap-' + uid)) return;
+      const wrap = document.createElement('div');
+      wrap.id = 'remote-vid-wrap-' + uid;
+      wrap.style.cssText = 'position:relative;';
+      const vid = document.createElement('video');
+      vid.id = 'remote-vid-' + uid; vid.autoplay = true; vid.playsInline = true;
+      vid.style.cssText = 'width:120px;height:90px;border-radius:10px;object-fit:cover;border:2px solid var(--bg4);box-shadow:0 4px 20px rgba(0,0,0,0.5);';
+      const lbl = document.createElement('div');
+      lbl.style.cssText = 'position:absolute;bottom:4px;left:4px;font-size:10px;color:#fff;font-weight:600;text-shadow:0 1px 3px rgba(0,0,0,0.8);';
+      lbl.textContent = userNameMap[uid]?.name || uid.slice(0, 6);
+      wrap.appendChild(vid); wrap.appendChild(lbl);
+      container.appendChild(wrap);
+      vid.srcObject = stream;
+    }
+
+    function toggleVideo() {
+      if (!localStream) return;
+      const track = localStream.getVideoTracks()[0];
+      if (!track) { showToast('📹 No camera found'); return; }
+      videoEnabled = !track.enabled;
+      track.enabled = videoEnabled;
+      updateVideoUI();
+      const v = document.getElementById('local-video');
+      if (v) v.style.display = videoEnabled ? 'block' : 'none';
+      showToast(videoEnabled ? '📹 Camera on' : '📹 Camera off');
+    }
+
+    function updateVideoUI() {
+      const btn = document.getElementById('btn-video');
+      if (btn) btn.classList.toggle('active', videoEnabled);
+    }
+
+    function watchUserScreen(uid, name) {
+      const realName = name || userNameMap[uid]?.name || uid?.slice(0, 8) || '—';
+      const pc = peerConnections[uid];
+      if (pc) {
+        const receivers = pc.getReceivers();
+        const videoReceiver = receivers.find(r => r.track && r.track.kind === 'video');
+        if (videoReceiver) {
+          const stream = new MediaStream([videoReceiver.track]);
+          openScreenViewer(stream, realName);
+          return;
+        }
+      }
+      document.getElementById('svPresenterName').textContent = realName;
+      document.getElementById('svNoStream').style.display = '';
+      document.getElementById('screenViewer').classList.add('show');
+      showToast('👁 Connecting to stream...');
+    }
+
+    // Listen for incoming video stream and auto-open viewer
     function showScreenInPreview(stream) {
       const box = document.getElementById('screenPreviewBox');
       box.querySelectorAll('video').forEach(v => v.remove());
@@ -1651,13 +2160,10 @@
     function updateMicUI() {
       document.getElementById('btn-mic').textContent = micEnabled ? '🎤' : '🔇';
       document.getElementById('btn-mic').classList.toggle('danger', !micEnabled);
-      document.getElementById('vc-mic').textContent = micEnabled ? '🎤' : '🔇';
-      document.getElementById('vc-mic').classList.toggle('muted', !micEnabled);
     }
     function toggleDeafen() {
       deafened = !deafened;
       document.getElementById('btn-deafen').textContent = deafened ? '🔇' : '🔊';
-      document.getElementById('vc-deafen').textContent = deafened ? '🔇' : '🔊';
       document.querySelectorAll('audio').forEach(a => a.muted = deafened);
       if (socket && currentChannel) socket.emit('mute-state', { channel: currentChannel, muted: !micEnabled, deafened });
       if (!userStates[clientId]) userStates[clientId] = {};
@@ -1709,7 +2215,7 @@
             wb = document.createElement('button');
             wb.className = 'watch-btn';
             wb.innerHTML = '🖥 Watch';
-            wb.onclick = () => { document.getElementById('screenPreview').classList.add('show'); showToast('👁 Watching screen share'); };
+            wb.onclick = (e) => { e.stopPropagation(); watchUserScreen(uid, uid?.slice(0, 8)); };
             el.appendChild(wb);
           }
         } else {
@@ -1727,7 +2233,7 @@
             badge.className = 'member-screen-badge';
             badge.innerHTML = '🖥 Sharing';
             badge.title = 'Click to watch';
-            badge.onclick = () => { document.getElementById('screenPreview').classList.add('show'); showToast('👁 Watching screen share'); };
+            badge.onclick = () => { watchUserScreen(uid, u?.name || uid?.slice(0, 8)); };
             let icons = row.querySelector('.member-icons');
             if (icons) icons.before(badge); else row.appendChild(badge);
           }
@@ -1744,6 +2250,7 @@
         document.getElementById('vc-screen').classList.remove('active');
         document.getElementById('screenPreview').classList.remove('show');
         document.getElementById('screenPreviewBox').innerHTML = '';
+        closeScreenViewer();
         if (socket && currentChannel) socket.emit('screen-share-state', { channel: currentChannel, sharing: false });
         if (!userStates[clientId]) userStates[clientId] = {};
         userStates[clientId].sharing = false;
@@ -1755,6 +2262,7 @@
         document.getElementById('btn-screen').classList.add('active');
         document.getElementById('vc-screen').classList.add('active');
         showScreenInPreview(screenStream);
+        openScreenViewer(screenStream, myName + ' (You)');
         if (socket && currentChannel) socket.emit('screen-share-state', { channel: currentChannel, sharing: true });
         if (!userStates[clientId]) userStates[clientId] = {};
         userStates[clientId].sharing = true;
@@ -1765,6 +2273,7 @@
           document.getElementById('vc-screen').classList.remove('active');
           document.getElementById('screenPreview').classList.remove('show');
           document.getElementById('screenPreviewBox').innerHTML = '';
+          closeScreenViewer();
           if (socket && currentChannel) socket.emit('screen-share-state', { channel: currentChannel, sharing: false });
           if (!userStates[clientId]) userStates[clientId] = {};
           userStates[clientId].sharing = false;
@@ -1773,6 +2282,92 @@
         Object.values(peerConnections).forEach(pc => screenStream.getTracks().forEach(t => pc.addTrack(t, screenStream)));
         showToast('🖥 Screen share started');
       } catch (err) { showToast('Screen access denied'); }
+    }
+
+    // ─── SCREEN VIEWER ───
+    let _svStream = null;
+    function openScreenViewer(stream, presenterName) {
+      _svStream = stream;
+      document.getElementById('svPresenterName').textContent = presenterName || '—';
+      const area = document.getElementById('svVideoArea');
+      area.querySelectorAll('video').forEach(v => v.remove());
+      document.getElementById('svNoStream').style.display = 'none';
+      const video = document.createElement('video');
+      video.srcObject = stream; video.autoplay = true; video.playsInline = true;
+      video.style.cssText = 'max-width:100%;max-height:100%;object-fit:contain;border-radius:4px;';
+      area.appendChild(video);
+      document.getElementById('screenViewer').classList.add('show');
+    }
+
+    function closeScreenViewer() {
+      const area = document.getElementById('svVideoArea');
+      area.querySelectorAll('video').forEach(v => v.remove());
+      document.getElementById('svNoStream').style.display = '';
+      document.getElementById('screenViewer').classList.remove('show');
+      _svStream = null;
+    }
+
+    // ─── REAL PING SYSTEM ───
+    const pingValues = {};
+    let _pingTimer = null;
+
+    function startRealPing(channelId) {
+      stopRealPing(); // پاک کردن قدیمی
+
+      // همه کانال‌ها رو idle کن
+      ['channel1', 'channel2', 'channel3'].forEach(ch => {
+        if (ch === channelId) return;
+        const pingEl = document.getElementById('pingval-' + ch);
+        const qualEl = document.getElementById('pingqual-' + ch);
+        const statEl = document.getElementById('pingstatus-' + ch);
+        const wifiEl = document.getElementById('wifi-' + ch);
+        if (pingEl) { pingEl.textContent = '-- ms'; pingEl.style.color = ''; }
+        if (qualEl) { qualEl.textContent = '—'; qualEl.style.color = ''; }
+        if (statEl) { statEl.className = 'ping-status-idle'; statEl.textContent = '⚪ Not Connected'; }
+        if (wifiEl) { wifiEl.classList.remove('connected'); wifiEl.style.color = ''; }
+      });
+
+      // کانال متصل رو آماده کن
+      const wifiEl = document.getElementById('wifi-' + channelId);
+      const statEl = document.getElementById('pingstatus-' + channelId);
+      if (wifiEl) wifiEl.classList.add('connected');
+      if (statEl) { statEl.className = 'ping-status-connected'; statEl.textContent = '🟢 Connected'; }
+
+      function doPing() {
+        if (!socket || !currentChannel) return;
+        const t = Date.now();
+        socket.emit('ping', t);
+        socket.once('pong', (ts) => {
+          const ms = Date.now() - ts;
+          const color = ms < 50 ? 'var(--green)' : ms < 100 ? '#fbbf24' : 'var(--red)';
+          const label = ms < 50 ? 'Good' : ms < 100 ? 'Fair' : 'Poor';
+
+          const pingEl = document.getElementById('pingval-' + channelId);
+          const qualEl = document.getElementById('pingqual-' + channelId);
+          const wEl = document.getElementById('wifi-' + channelId);
+
+          if (pingEl) { pingEl.textContent = ms + ' ms'; pingEl.style.color = color; }
+          if (qualEl) { qualEl.textContent = label; qualEl.style.color = color; }
+          if (wEl) { wEl.style.color = color; }
+        });
+      }
+
+      doPing(); // اولین ping سریع
+      _pingTimer = setInterval(doPing, 3000);
+    }
+
+    function stopRealPing() {
+      if (_pingTimer) { clearInterval(_pingTimer); _pingTimer = null; }
+      ['channel1', 'channel2', 'channel3'].forEach(ch => {
+        const pingEl = document.getElementById('pingval-' + ch);
+        const qualEl = document.getElementById('pingqual-' + ch);
+        const statEl = document.getElementById('pingstatus-' + ch);
+        const wifiEl = document.getElementById('wifi-' + ch);
+        if (pingEl) { pingEl.textContent = '-- ms'; pingEl.style.color = ''; }
+        if (qualEl) { qualEl.textContent = '—'; qualEl.style.color = ''; }
+        if (statEl) { statEl.className = 'ping-status-idle'; statEl.textContent = '⚪ Not Connected'; }
+        if (wifiEl) { wifiEl.classList.remove('connected'); wifiEl.style.color = ''; }
+      });
     }
 
     function disconnectCall() {
@@ -1785,6 +2380,11 @@
         screenStream.getTracks().forEach(t => t.stop()); screenStream = null;
         if (socket && currentChannel) socket.emit('screen-share-state', { channel: currentChannel, sharing: false });
       }
+      // پاک کردن video elements
+      const lv = document.getElementById('local-video'); if (lv) lv.remove();
+      const rv = document.getElementById('remote-videos'); if (rv) rv.remove();
+      videoEnabled = false; updateVideoUI();
+
       Object.values(peerConnections).forEach(pc => pc.close()); peerConnections = {};
       if (currentChannel && socket) socket.emit('leave', currentChannel);
       currentChannel = null;
@@ -1797,6 +2397,8 @@
       document.getElementById('vc-screen').classList.remove('active');
       document.getElementById('screenPreview').classList.remove('show');
       document.getElementById('screenPreviewBox').innerHTML = '';
+      closeScreenViewer();
+      stopRealPing();
       document.getElementById('membersList').innerHTML = '<div class="members-empty">You haven\'t joined a channel yet</div>';
       ['channel1', 'channel2', 'channel3'].forEach(c => { const el = document.getElementById('users-' + c); if (el) el.innerHTML = ''; });
       micEnabled = true; updateMicUI();
@@ -1812,12 +2414,12 @@
       inp.value = '';
     }
 
-    function appendMsg(fromId, name, av, text, isMe) {
+    function appendMsg(fromId, name, av, text, isMe, dateObj) {
       const msgs = document.getElementById('chatMessages');
       document.getElementById('emptyChat')?.remove();
       const div = document.createElement('div');
       div.className = 'msg-group' + (isMe ? ' msg-mine' : '');
-      const t = new Date();
+      const t = dateObj || new Date();
       const time = t.getHours().toString().padStart(2, '0') + ':' + t.getMinutes().toString().padStart(2, '0');
       div.innerHTML = `<div class="msg-av">${av}</div><div class="msg-body"><div class="msg-meta"><span class="msg-author">${esc(isMe ? myName : name)}</span><span class="msg-time">Today ${time}</span></div><div class="msg-text">${esc(text)}</div></div>`;
       msgs.appendChild(div);
