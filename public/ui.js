@@ -237,17 +237,34 @@ function showRemoteVideo(uid, stream) {
   let container = document.getElementById('remote-videos');
   if (!container) {
     container = document.createElement('div'); container.id = 'remote-videos';
-    container.style.cssText = 'position:fixed;bottom:90px;right:150px;display:flex;gap:8px;z-index:100;flex-wrap:wrap;max-width:400px;justify-content:flex-end;';
+    container.style.cssText = 'position:fixed;bottom:90px;right:16px;display:flex;flex-direction:column;gap:8px;z-index:100;align-items:flex-end;';
     document.body.appendChild(container);
   }
-  if (document.getElementById('remote-vid-wrap-' + uid)) return;
-  const wrap = document.createElement('div'); wrap.id = 'remote-vid-wrap-' + uid; wrap.style.cssText = 'position:relative;';
-  const vid = document.createElement('video'); vid.id = 'remote-vid-' + uid; vid.autoplay = true; vid.playsInline = true;
-  vid.style.cssText = 'width:120px;height:90px;border-radius:10px;object-fit:cover;border:2px solid var(--bg4);box-shadow:0 4px 20px rgba(0,0,0,0.5);';
+  // اگه قبلاً باز بود، فقط stream رو آپدیت کن
+  const existingVid = document.getElementById('remote-vid-' + uid);
+  if (existingVid) { existingVid.srcObject = stream; return; }
+
+  const wrap = document.createElement('div');
+  wrap.id = 'remote-vid-wrap-' + uid;
+  wrap.style.cssText = 'position:relative;border-radius:12px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,0.6);';
+
+  const vid = document.createElement('video');
+  vid.id = 'remote-vid-' + uid; vid.autoplay = true; vid.playsInline = true;
+  vid.style.cssText = 'width:160px;height:120px;object-fit:cover;display:block;';
+
+  // نام کاربر
   const lbl = document.createElement('div');
-  lbl.style.cssText = 'position:absolute;bottom:4px;left:4px;font-size:10px;color:#fff;font-weight:600;text-shadow:0 1px 3px rgba(0,0,0,0.8);';
-  lbl.textContent = State.userNameMap[uid]?.name || uid.slice(0, 6);
-  wrap.appendChild(vid); wrap.appendChild(lbl); container.appendChild(wrap);
+  lbl.style.cssText = 'position:absolute;bottom:0;left:0;right:0;padding:4px 8px;font-size:11px;color:#fff;font-weight:600;background:linear-gradient(transparent,rgba(0,0,0,0.7));text-shadow:0 1px 3px rgba(0,0,0,0.8);';
+  lbl.textContent = '📹 ' + (State.userNameMap[uid]?.name || uid.slice(0, 6));
+
+  // دکمه بستن
+  const closeBtn = document.createElement('button');
+  closeBtn.textContent = '✕';
+  closeBtn.style.cssText = 'position:absolute;top:4px;right:4px;background:rgba(0,0,0,0.6);color:#fff;border:none;border-radius:50%;width:20px;height:20px;font-size:11px;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1;';
+  closeBtn.onclick = () => wrap.remove();
+
+  wrap.appendChild(vid); wrap.appendChild(lbl); wrap.appendChild(closeBtn);
+  container.appendChild(wrap);
   vid.srcObject = stream;
 }
 

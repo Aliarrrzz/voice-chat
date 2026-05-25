@@ -23,7 +23,7 @@ const VoiceManager = {
   // ── join channel ─────────────────────────────────────────
   async joinChannel(ch, label) {
     if (State.currentChannel === ch) return;
-    ['channel1', 'channel2', 'channel3'].forEach(c =>
+    ['general', 'gaming', 'chill'].forEach(c =>
       document.getElementById('btn-' + c).classList.remove('active'));
     document.getElementById('btn-' + ch).classList.add('active');
     State.currentChannel = ch;
@@ -69,7 +69,7 @@ const VoiceManager = {
     if (State.currentChannel && State.socket) State.socket.emit('leave', State.currentChannel);
     State.currentChannel = null;
 
-    ['channel1', 'channel2', 'channel3'].forEach(c => {
+    ['general', 'gaming', 'chill'].forEach(c => {
       document.getElementById('btn-' + c).classList.remove('active');
       const el = document.getElementById('users-' + c); if (el) el.innerHTML = '';
     });
@@ -139,8 +139,16 @@ const VoiceManager = {
         State.videoEnabled = true;
         updateVideoUI();
         showLocalVideo(State.localStream);
-        // به peer connections اضافه کن
-        Object.values(State.peerConnections).forEach(pc => pc.addTrack(vt, State.localStream));
+        // به peer connections اضافه کن + renegotiation انجام بده
+        for (const [peerId, pc] of Object.entries(State.peerConnections)) {
+          pc.addTrack(vt, State.localStream);
+          // بدون renegotiation، remote peer هیچ‌وقت track رو دریافت نمی‌کنه!
+          try {
+            const offer = await pc.createOffer();
+            await pc.setLocalDescription(offer);
+            State.socket.emit('offer', { to: peerId, offer });
+          } catch (e) { console.warn('renegotiation failed for', peerId, e); }
+        }
         if (State.socket && State.currentChannel)
           State.socket.emit('video-state', { channel: State.currentChannel, videoEnabled: true });
         showToast('📹 Camera on');
@@ -195,23 +203,52 @@ const VoiceManager = {
     pc._screenStreamId = null; // track کردن stream id صفحه‌نمایش
     pc.ontrack = e => {
       if (e.track.kind === 'audio') {
-        const a = document.createElement('audio'); a.srcObject = e.streams[0]; a.autoplay = true; a.style.display = 'none'; document.body.appendChild(a);
+        // پاک کردن audio قدیمی همین کاربر اگه وجود داشت
+        const oldAudio = document.getElementById('audio-' + userId);
+        if (oldAudio) oldAudio.remove();
+        const a = document.createElement('audio');
+        a.id = 'audio-' + userId;
+        a.srcObject = e.streams[0]; a.autoplay = true; a.style.display = 'none';
+        document.body.appendChild(a);
       }
       if (e.track.kind === 'video') {
         const label = e.track.label?.toLowerCase() || '';
-        const isScreen = label.includes('screen') || label.includes('display') || label.includes('monitor') || label.includes('window');
+        const senderStreamId = e.streams[0]?.id || '';
+
+        // تشخیص screen share:
+        // 1. label شامل کلمات مربوط به screen باشه
+        // 2. streamId قبلاً به عنوان screen ثبت شده باشه
+        // 3. user فقط screen share داره (sharing=true) و videoEnabled نیست → اولین track هم screen هست
+        const userState = State.userStates[userId] || {};
+        const userHasCamera = userState.videoEnabled === true;
+        const userIsSharing = userState.sharing === true;
+
+        const isScreenByLabel = label.includes('screen') || label.includes('display') ||
+          label.includes('monitor') || label.includes('window');
+        const isScreenById = senderStreamId && State._remoteScreenStreamIds?.[userId] === senderStreamId;
+        // اگه camera ندارند ولی screen share دارند → هر video track که بیاد screen هست
+        const isScreenByState = userIsSharing && !userHasCamera && userState.videoStream == null;
+        // اگه قبلاً یه camera track داریم → این دومی screen هست
+        const isScreenAsSecond = userState.videoStream != null;
+
+        const isScreen = isScreenByLabel || isScreenById || isScreenByState || isScreenAsSecond;
         if (isScreen) {
           pc._screenStreamId = e.streams[0].id;
+          // ذخیره streamId برای تشخیص بعدی
+          if (!State._remoteScreenStreamIds) State._remoteScreenStreamIds = {};
+          State._remoteScreenStreamIds[userId] = e.streams[0].id;
           if (!State.userStates[userId]) State.userStates[userId] = {};
           State.userStates[userId].screenStream = e.streams[0];
-          showScreenInPreview(e.streams[0]);
+          // فقط preview خودِ user نشون داده می‌شه — بقیه از Watch استفاده می‌کنن
+          // showScreenInPreview حذف شد
         } else {
           if (!State.userStates[userId]) State.userStates[userId] = {};
           State.userStates[userId].videoStream = e.streams[0];
           // دکمه Watch رو نشون بده
           State.userStates[userId].videoEnabled = true;
           updateUserVideoIcons(userId);
-          showRemoteVideo(userId, e.streams[0]);
+          // 🔴 Fix: دیگه auto نمایش نده — فقط دکمه Watch نشون بده
+          // showRemoteVideo فقط موقعی صدا زده می‌شه که user روی Watch کلیک کنه
           // وقتی track قطع شد، icon رو پاک کن
           e.track.onended = () => {
             if (State.userStates[userId]) {
@@ -273,39 +310,105 @@ const VoiceManager = {
         State.userStates[State.clientId].sharing = false;
         updateUserScreenIcons(State.clientId);
       };
-      Object.values(State.peerConnections).forEach(pc =>
-        State.screenStream.getTracks().forEach(t => pc.addTrack(t, State.screenStream)));
+      // 🔴 Fix: renegotiation لازمه وگرنه remote peer track رو نمی‌بینه
+      for (const [peerId, pc] of Object.entries(State.peerConnections)) {
+        State.screenStream.getTracks().forEach(t => pc.addTrack(t, State.screenStream));
+        try {
+          const offer = await pc.createOffer();
+          await pc.setLocalDescription(offer);
+          State.socket.emit('offer', { to: peerId, offer });
+        } catch (e) { console.warn('screen renegotiation failed for', peerId, e); }
+      }
       showToast('🖥 Screen share started');
     } catch { showToast('Screen access denied'); }
   },
 
   watchUserVideo(uid, name) {
     const realName = name || State.userNameMap[uid]?.name || uid?.slice(0, 8) || '—';
+
+    // اول از stream ذخیره شده استفاده کن
     const storedStream = State.userStates[uid]?.videoStream;
-    if (storedStream) { openScreenViewer(storedStream, realName + ' 📹'); return; }
+    if (storedStream && storedStream.active && storedStream.getVideoTracks().length > 0) {
+      openScreenViewer(storedStream, realName + ' 📹');
+      return;
+    }
+
+    // fallback: از PC receivers بگیر
     const pc = State.peerConnections[uid];
     if (pc) {
-      const vr = pc.getReceivers().find(r => r.track && r.track.kind === 'video');
-      if (vr) { openScreenViewer(new MediaStream([vr.track]), realName + ' 📹'); return; }
+      const videoReceivers = pc.getReceivers().filter(r =>
+        r.track && r.track.kind === 'video' && r.track.readyState === 'live'
+      );
+      const screenStreamId = pc._screenStreamId;
+      const camReceiver = videoReceivers.find(r => {
+        if (!screenStreamId) return true;
+        return !pc.getTransceivers().some(t =>
+          t.receiver === r && t.receiver.track.id === screenStreamId
+        );
+      }) || videoReceivers[0];
+
+      if (camReceiver) {
+        const stream = new MediaStream([camReceiver.track]);
+        if (!State.userStates[uid]) State.userStates[uid] = {};
+        State.userStates[uid].videoStream = stream;
+        openScreenViewer(stream, realName + ' 📹');
+        return;
+      }
     }
-    showToast('📹 No camera stream available');
+
+    // هنوز نرسیده — retry
+    showToast('📹 Waiting for camera stream...');
+    setTimeout(() => {
+      const retryStream = State.userStates[uid]?.videoStream;
+      if (retryStream && retryStream.active) {
+        openScreenViewer(retryStream, realName + ' 📹');
+      } else {
+        showToast('📹 Camera stream not available');
+      }
+    }, 1500);
   },
 
   watchUserScreen(uid, name) {
     const realName = name || State.userNameMap[uid]?.name || uid?.slice(0, 8) || '—';
-    // اول از stream ذخیره شده در userStates استفاده کن
+
+    // اول از stream ذخیره شده استفاده کن
     const storedStream = State.userStates[uid]?.screenStream;
-    if (storedStream) { openScreenViewer(storedStream, realName); return; }
-    // fallback: از PC receivers بگیر
+    if (storedStream && storedStream.active && storedStream.getVideoTracks().length > 0) {
+      openScreenViewer(storedStream, realName);
+      return;
+    }
+
+    // fallback: از PC receivers بگیر — screen streamId رو می‌دونیم
     const pc = State.peerConnections[uid];
     if (pc) {
-      const vr = pc.getReceivers().find(r => r.track && r.track.kind === 'video');
-      if (vr) { openScreenViewer(new MediaStream([vr.track]), realName); return; }
+      const screenStreamId = pc._screenStreamId;
+      const receivers = pc.getReceivers().filter(r =>
+        r.track && r.track.kind === 'video' && r.track.readyState === 'live'
+      );
+
+      // اگه بیشتر از یه video receiver داریم، آخری screen هست (screen بعد از camera اضافه می‌شه)
+      // اگه فقط یکی داریم، همونه
+      const screenReceiver = receivers[receivers.length - 1] || null;
+
+      if (screenReceiver) {
+        openScreenViewer(new MediaStream([screenReceiver.track]), realName);
+        return;
+      }
     }
+
+    // هنوز نرسیده — نمایش viewer و retry
+    showToast('🖥 Waiting for screen stream...');
     document.getElementById('svPresenterName').textContent = realName;
     document.getElementById('svNoStream').style.display = '';
     document.getElementById('screenViewer').classList.add('show');
-    showToast('👁 Connecting to stream...');
+
+    // retry بعد از ۱.۵ ثانیه
+    setTimeout(() => {
+      const retry = State.userStates[uid]?.screenStream;
+      if (retry && retry.active) {
+        openScreenViewer(retry, realName);
+      }
+    }, 1500);
   },
 };
 

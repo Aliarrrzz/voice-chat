@@ -73,6 +73,9 @@ const SocketManager = {
       delete State.userStates[userId];
       const wrap = document.getElementById('remote-vid-wrap-' + userId);
       if (wrap) wrap.remove();
+      // 🔴 Fix: پاک کردن audio element برای جلوگیری از memory leak
+      const audioEl = document.getElementById('audio-' + userId);
+      if (audioEl) { audioEl.srcObject = null; audioEl.remove(); }
       VoiceManager.playSound('leave');
       showToast('👤 User left');
     });
@@ -100,12 +103,16 @@ const SocketManager = {
       if (!State.userStates[userId]) State.userStates[userId] = {};
       State.userStates[userId].sharing = sharing;
       updateUserScreenIcons(userId);
-      // اگه share متوقف شد، preview و viewer رو ببند
+      // اگه share متوقف شد:
       if (!sharing) {
         delete State.userStates[userId].screenStream;
+        // فقط viewer رو ببند (نه preview — preview فقط برای خودِ ما هست)
         closeScreenViewer();
-        document.getElementById('screenPreview').classList.remove('show');
-        document.getElementById('screenPreviewBox').innerHTML = '';
+        // preview و screenPreviewBox فقط اگه خودِ ما share نداریم پاک بشه
+        if (!State.screenStream) {
+          document.getElementById('screenPreview').classList.remove('show');
+          document.getElementById('screenPreviewBox').innerHTML = '';
+        }
       }
     });
 
@@ -120,7 +127,13 @@ const SocketManager = {
 
     // ── WebRTC ─────────────────────────────────────────────
     s.on('offer', async ({ from, offer }) => {
-      const pc = await VoiceManager.createPC(from, false);
+      // اگه PC قبلاً وجود داره (renegotiation)، مستقیم روش کار کن
+      let pc = State.peerConnections[from];
+      if (!pc) pc = await VoiceManager.createPC(from, false);
+      // اگه signaling state مناسب نیست، صبر کن
+      if (pc.signalingState === 'have-local-offer') {
+        await pc.setLocalDescription({ type: 'rollback' });
+      }
       await pc.setRemoteDescription(new RTCSessionDescription(offer));
       const ans = await pc.createAnswer();
       await pc.setLocalDescription(ans);

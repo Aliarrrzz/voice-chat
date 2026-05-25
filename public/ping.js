@@ -1,16 +1,14 @@
 // ─── PING MANAGER ────────────────────────────────────────────
 const PingManager = {
   _timer: null,
-  _channels: ['channel1', 'channel2', 'channel3'],
+  _channels: ['general', 'gaming', 'chill'],
 
   start(channelId) {
     this.stop();
-    // همه رو idle کن
     this._channels.forEach(ch => {
       if (ch === channelId) return;
       this._setIdle(ch);
     });
-    // کانال جاری رو connected کن
     const wifiEl = document.getElementById('wifi-' + channelId);
     const statEl = document.getElementById('pingstatus-' + channelId);
     if (wifiEl) wifiEl.classList.add('connected');

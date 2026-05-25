@@ -99,6 +99,11 @@ export class VoiceController {
     socket.to(data.channel).emit('screen-share-state', { userId: socket.id, ...data });
   }
 
+  // 🔴 Fix: video-state که قبلاً missing بود
+  videoState(socket: Socket, data: any) {
+    socket.to(data.channel).emit('video-state', { userId: socket.id, videoEnabled: data.videoEnabled });
+  }
+
   // ─── disconnect ────────────────────────────────────────────
   async handleDisconnect(socket: any) {
     console.log(`[-] disconnected: ${socket.id}`);

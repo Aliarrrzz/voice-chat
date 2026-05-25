@@ -49,6 +49,7 @@ export class SocketService {
       socket.on('mute-state',         (d: any) => this.voice.muteState(socket, d));
       socket.on('speaking',           (d: any) => this.voice.speaking(socket, d));
       socket.on('screen-share-state', (d: any) => this.voice.screenShareState(socket, d));
+      socket.on('video-state',        (d: any) => this.voice.videoState(socket, d));
 
       // ── chat ──────────────────────────────────────────────
       socket.on('chat', (d: any) => this.chat.sendMessage(socket, d));
