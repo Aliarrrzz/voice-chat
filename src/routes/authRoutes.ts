@@ -35,14 +35,14 @@ router.post('/register', async (req: Request, res: Response) => {
 router.post('/login', async (req: Request, res: Response) => {
   const { username, password } = req.body;
   if (!username || !password)
-    return res.status(400).json({ error: 'نام کاربری و رمز عبور الزامی است' });
+    return res.status(400).json({ error: 'Username and password needed' });
 
   try {
     const user = await getRepo().findOneBy({ username });
-    if (!user) return res.status(400).json({ error: 'کاربر پیدا نشد' });
+    if (!user) return res.status(400).json({ error: 'User Not Found' });
 
     const valid = await bcrypt.compare(password, user.password);
-    if (!valid) return res.status(400).json({ error: 'رمز اشتباه است' });
+    if (!valid) return res.status(400).json({ error: ' Wrong password ' });
 
     const token = jwt.sign(
       { id: user.id, username: user.username },
@@ -51,7 +51,7 @@ router.post('/login', async (req: Request, res: Response) => {
     );
     return res.json({ token, user: { id: user.id, username: user.username, avatar: user.avatar } });
   } catch {
-    return res.status(500).json({ error: 'خطای سرور' });
+    return res.status(500).json({ error: 'Server erorrr' });
   }
 });
 

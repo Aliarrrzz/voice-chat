@@ -1,7 +1,6 @@
 // ─── PING MANAGER ────────────────────────────────────────────
 const PingManager = {
   _timer: null,
-  // channels رو از DOM می‌خونیم تا اگه channel جدید اضافه شد، اتوماتیک کار کنه
   get _channels() {
     return Array.from(document.querySelectorAll('[id^="btn-"]'))
       .map(el => el.id.replace('btn-', ''))

@@ -15,6 +15,6 @@ const State = {
   analyser: null,
   speakingInterval: null,
   isSpeaking: false,
-  userStates: {},    // { uid: { muted, deafened, sharing } }
-  userNameMap: {},   // { socketId: { name, avatar } }
+  userStates: {},  
+  userNameMap: {},  
 };

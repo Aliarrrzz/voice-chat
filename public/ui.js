@@ -240,7 +240,7 @@ function showRemoteVideo(uid, stream) {
     container.style.cssText = 'position:fixed;bottom:90px;right:16px;display:flex;flex-direction:column;gap:8px;z-index:100;align-items:flex-end;';
     document.body.appendChild(container);
   }
-  // اگه قبلاً باز بود، فقط stream رو آپدیت کن
+
   const existingVid = document.getElementById('remote-vid-' + uid);
   if (existingVid) { existingVid.srcObject = stream; return; }
 
@@ -252,12 +252,10 @@ function showRemoteVideo(uid, stream) {
   vid.id = 'remote-vid-' + uid; vid.autoplay = true; vid.playsInline = true;
   vid.style.cssText = 'width:160px;height:120px;object-fit:cover;display:block;';
 
-  // نام کاربر
   const lbl = document.createElement('div');
   lbl.style.cssText = 'position:absolute;bottom:0;left:0;right:0;padding:4px 8px;font-size:11px;color:#fff;font-weight:600;background:linear-gradient(transparent,rgba(0,0,0,0.7));text-shadow:0 1px 3px rgba(0,0,0,0.8);';
   lbl.textContent = '📹 ' + (State.userNameMap[uid]?.name || uid.slice(0, 6));
 
-  // دکمه بستن
   const closeBtn = document.createElement('button');
   closeBtn.textContent = '✕';
   closeBtn.style.cssText = 'position:absolute;top:4px;right:4px;background:rgba(0,0,0,0.6);color:#fff;border:none;border-radius:50%;width:20px;height:20px;font-size:11px;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1;';

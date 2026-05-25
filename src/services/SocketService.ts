@@ -30,7 +30,6 @@ export class SocketService {
       // ── join / leave ──────────────────────────────────────
       socket.on('join', async (channelName: string) => {
         await this.voice.joinChannel(socket, channelName);
-        // تاریخچه chat بعد از join
         const ch = await AppDataSource.getRepository(Channel)
           .findOneBy({ name: channelName });
         if (ch) await this.chat.loadHistory(socket, ch.id);

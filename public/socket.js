@@ -73,7 +73,6 @@ const SocketManager = {
       delete State.userStates[userId];
       const wrap = document.getElementById('remote-vid-wrap-' + userId);
       if (wrap) wrap.remove();
-      // 🔴 Fix: پاک کردن audio element برای جلوگیری از memory leak
       const audioEl = document.getElementById('audio-' + userId);
       if (audioEl) { audioEl.srcObject = null; audioEl.remove(); }
       VoiceManager.playSound('leave');
@@ -93,7 +92,6 @@ const SocketManager = {
       State.userStates[userId].videoEnabled = videoEnabled;
       updateUserVideoIcons(userId);
       if (!videoEnabled) {
-        // اگه کسی webcam خاموش کرد، viewer مربوطه رو ببند
         const wrap = document.getElementById('remote-vid-wrap-' + userId);
         if (wrap) wrap.remove();
       }
@@ -103,12 +101,9 @@ const SocketManager = {
       if (!State.userStates[userId]) State.userStates[userId] = {};
       State.userStates[userId].sharing = sharing;
       updateUserScreenIcons(userId);
-      // اگه share متوقف شد:
       if (!sharing) {
         delete State.userStates[userId].screenStream;
-        // فقط viewer رو ببند (نه preview — preview فقط برای خودِ ما هست)
         closeScreenViewer();
-        // preview و screenPreviewBox فقط اگه خودِ ما share نداریم پاک بشه
         if (!State.screenStream) {
           document.getElementById('screenPreview').classList.remove('show');
           document.getElementById('screenPreviewBox').innerHTML = '';
@@ -130,9 +125,7 @@ const SocketManager = {
       let pc = State.peerConnections[from];
       if (!pc) pc = await VoiceManager.createPC(from, false);
       try {
-        // handle glare: اگه هر دو طرف همزمان offer فرستادن
         if (pc.signalingState === 'have-local-offer') {
-          // polite peer: rollback و offer طرف مقابل رو قبول کن
           await pc.setLocalDescription({ type: 'rollback' });
         }
         if (pc.signalingState !== 'stable' && pc.signalingState !== 'have-remote-offer') {
@@ -170,7 +163,6 @@ const SocketManager = {
       msgs.scrollTop = msgs.scrollHeight;
     });
 
-    // pong handled by PingManager
     s.on('pong', () => { });
   },
 };
