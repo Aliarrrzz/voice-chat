@@ -19,7 +19,7 @@ const io     = new Server(server, { cors: { origin: '*', methods: ['GET', 'POST'
 
 // ── middleware ───────────────────────────────────────────────
 app.use(express.json());
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, '..', 'public')));
 
 // 🟠 Fix: favicon 404 رو suppress کن
 app.get('/favicon.ico', (_req, res) => res.status(204).end());
