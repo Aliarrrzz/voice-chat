@@ -39,7 +39,7 @@ export class ChatController {
   async loadHistory(socket: Socket, channelId: number) {
     const msgs = await AppDataSource.getRepository(Message).find({
       where:     { channel: { id: channelId } },
-      relations: { user: true },   // explicit — دیگه eager نداریم
+      relations: { user: true },  
       order:     { createdAt: 'ASC' },
       take:      50,
     });
