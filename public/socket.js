@@ -1,7 +1,7 @@
 // ─── SOCKET MANAGER ──────────────────────────────────────────
 const SocketManager = {
   init() {
-    State.socket = io('http://localhost:3000', {
+    State.socket = io(window.location.origin, {
       transports: ['websocket'],
       auth: { token: localStorage.getItem('aura_token') || null },
       reconnection: true,
