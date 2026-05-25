@@ -127,17 +127,25 @@ const SocketManager = {
 
     // ── WebRTC ─────────────────────────────────────────────
     s.on('offer', async ({ from, offer }) => {
-      // اگه PC قبلاً وجود داره (renegotiation)، مستقیم روش کار کن
       let pc = State.peerConnections[from];
       if (!pc) pc = await VoiceManager.createPC(from, false);
-      // اگه signaling state مناسب نیست، صبر کن
-      if (pc.signalingState === 'have-local-offer') {
-        await pc.setLocalDescription({ type: 'rollback' });
+      try {
+        // handle glare: اگه هر دو طرف همزمان offer فرستادن
+        if (pc.signalingState === 'have-local-offer') {
+          // polite peer: rollback و offer طرف مقابل رو قبول کن
+          await pc.setLocalDescription({ type: 'rollback' });
+        }
+        if (pc.signalingState !== 'stable' && pc.signalingState !== 'have-remote-offer') {
+          console.warn('unexpected signalingState:', pc.signalingState, '— skipping offer from', from);
+          return;
+        }
+        await pc.setRemoteDescription(new RTCSessionDescription(offer));
+        const ans = await pc.createAnswer();
+        await pc.setLocalDescription(ans);
+        s.emit('answer', { to: from, answer: ans });
+      } catch (e) {
+        console.warn('offer handling error from', from, e);
       }
-      await pc.setRemoteDescription(new RTCSessionDescription(offer));
-      const ans = await pc.createAnswer();
-      await pc.setLocalDescription(ans);
-      s.emit('answer', { to: from, answer: ans });
     });
 
     s.on('answer', async ({ from, answer }) => {

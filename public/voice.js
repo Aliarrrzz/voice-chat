@@ -49,9 +49,7 @@ const VoiceManager = {
   // ── disconnect ───────────────────────────────────────────
   disconnect() {
     this.playSound('leave');
-    if (State.speakingInterval) { clearInterval(State.speakingInterval); State.speakingInterval = null; }
-    if (State.audioContext) { State.audioContext.close(); State.audioContext = null; State.analyser = null; }
-    State.isSpeaking = false;
+    this.stopVoiceDetection();
     if (State.localStream) { State.localStream.getTracks().forEach(t => t.stop()); State.localStream = null; }
     if (State.screenStream) {
       State.screenStream.getTracks().forEach(t => t.stop()); State.screenStream = null;
@@ -92,7 +90,7 @@ const VoiceManager = {
   toggleMic() {
     if (!State.localStream) return;
     const t = State.localStream.getAudioTracks()[0];
-    State.micEnabled = !t.enabled; t.enabled = State.micEnabled;
+    t.enabled = !t.enabled; State.micEnabled = t.enabled;
     updateMicUI();
     if (State.socket && State.currentChannel)
       State.socket.emit('mute-state', { channel: State.currentChannel, muted: !State.micEnabled, deafened: State.deafened });
@@ -157,8 +155,16 @@ const VoiceManager = {
   },
 
   // ── voice detection ──────────────────────────────────────
+  stopVoiceDetection() {
+    if (State.speakingInterval) { clearInterval(State.speakingInterval); State.speakingInterval = null; }
+    if (State.audioContext) { try { State.audioContext.close(); } catch (e) {} State.audioContext = null; State.analyser = null; }
+    State.isSpeaking = false;
+  },
+
   startVoiceDetection() {
-    if (State.audioContext) return;
+    // قبل از شروع مجدد، قبلی رو cleanup کن
+    this.stopVoiceDetection();
+    if (!State.localStream) return;
     try {
       State.audioContext = new (window.AudioContext || window.webkitAudioContext)();
       State.analyser = State.audioContext.createAnalyser();

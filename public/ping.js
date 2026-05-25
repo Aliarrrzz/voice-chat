@@ -1,7 +1,12 @@
 // ─── PING MANAGER ────────────────────────────────────────────
 const PingManager = {
   _timer: null,
-  _channels: ['general', 'gaming', 'chill'],
+  // channels رو از DOM می‌خونیم تا اگه channel جدید اضافه شد، اتوماتیک کار کنه
+  get _channels() {
+    return Array.from(document.querySelectorAll('[id^="btn-"]'))
+      .map(el => el.id.replace('btn-', ''))
+      .filter(id => id && document.getElementById('cnt-' + id) !== null);
+  },
 
   start(channelId) {
     this.stop();

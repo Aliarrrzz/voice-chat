@@ -14,7 +14,7 @@ export const AppDataSource = new DataSource({
   username: process.env.DB_USER || 'postgres',
   password: process.env.DB_PASSWORD || '',
   database: process.env.DB_NAME || '',
-  synchronize: process.env.NODE_ENV !== 'production',
+  synchronize: process.env.NODE_ENV === 'development', // فقط در development — production هیچ‌وقت true نشه
   logging: false,
   entities: [User, Channel, Message, VoiceSession],
 });

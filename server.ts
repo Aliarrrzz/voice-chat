@@ -10,6 +10,7 @@ import { Server } from 'socket.io';
 import { AppDataSource } from './config/data-source';
 import { seedChannels }  from './src/seeders/channelSeeder';
 import { SocketService } from './src/services/SocketService';
+import { VoiceSession }  from './entities/VoiceSession';
 import authRoutes        from './src/routes/authRoutes';
 
 const app    = express();
@@ -33,6 +34,14 @@ new SocketService(io).init();
 AppDataSource.initialize()
   .then(async () => {
     console.log('✅ Database connected');
+    // بستن session های باز که سرور crash کرده بود
+    await AppDataSource.getRepository(VoiceSession)
+      .createQueryBuilder()
+      .update()
+      .set({ leftAt: new Date() })
+      .where('leftAt IS NULL')
+      .execute();
+    console.log('✅ Orphan voice sessions cleaned up');
     await seedChannels();
     const PORT = process.env.PORT || 3000;
     server.listen(PORT, () =>
