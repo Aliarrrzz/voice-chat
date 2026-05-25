@@ -152,7 +152,7 @@ const VoiceManager = {
   // ── voice detection ──────────────────────────────────────
   stopVoiceDetection() {
     if (State.speakingInterval) { clearInterval(State.speakingInterval); State.speakingInterval = null; }
-    if (State.audioContext) { try { State.audioContext.close(); } catch (e) {} State.audioContext = null; State.analyser = null; }
+    if (State.audioContext) { try { State.audioContext.close(); } catch (e) { } State.audioContext = null; State.analyser = null; }
     State.isSpeaking = false;
   },
 
@@ -195,12 +195,26 @@ const VoiceManager = {
   // ── WebRTC ───────────────────────────────────────────────
   async createPC(userId, isInit) {
     if (State.peerConnections[userId]) return State.peerConnections[userId];
-    const pc = new RTCPeerConnection({ iceServers: [{ urls: 'stun:stun.l.google.com:19302' }] });
+    const pc = new RTCPeerConnection({
+      iceServers: [
+        { urls: 'stun:stun.l.google.com:19302' },
+        {
+          urls: 'turn:openrelay.metered.ca:80',
+          username: 'openrelayproject',
+          credential: 'openrelayproject'
+        },
+        {
+          urls: 'turn:openrelay.metered.ca:443',
+          username: 'openrelayproject',
+          credential: 'openrelayproject'
+        }
+      ]
+    });
     State.peerConnections[userId] = pc;
     if (State.localStream) State.localStream.getTracks().forEach(t => pc.addTrack(t, State.localStream));
     if (State.screenStream) State.screenStream.getTracks().forEach(t => pc.addTrack(t, State.screenStream));
     pc.onicecandidate = e => { if (e.candidate) State.socket.emit('ice', { to: userId, candidate: e.candidate }); };
-    pc._screenStreamId = null; 
+    pc._screenStreamId = null;
     pc.ontrack = e => {
       if (e.track.kind === 'audio') {
         const oldAudio = document.getElementById('audio-' + userId);
