@@ -198,15 +198,11 @@ const VoiceManager = {
     const pc = new RTCPeerConnection({
       iceServers: [
         { urls: 'stun:stun.l.google.com:19302' },
+        { urls: 'stun:91.107.248.181:3478' },
         {
-          urls: 'turn:openrelay.metered.ca:80',
-          username: 'openrelayproject',
-          credential: 'openrelayproject'
-        },
-        {
-          urls: 'turn:openrelay.metered.ca:443',
-          username: 'openrelayproject',
-          credential: 'openrelayproject'
+          urls: 'turn:91.107.248.181:3478',
+          username: 'aurauser',
+          credential: 'b7875e444a3db63b0ca81e9dd2339ef6122d6675c56581e672979f5e15611baf'
         }
       ]
     });
